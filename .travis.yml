@@ -22,5 +22,7 @@ script:
 deploy:
   provider: 'script'
   script: './docker-deploy.sh'
+  skip_cleanup: true
   on:
+    branch: master
     tags: true
