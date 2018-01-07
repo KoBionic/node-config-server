@@ -1,0 +1,26 @@
+sudo: 'required'
+
+language: 'node_js'
+node_js:
+  - 'node'
+  - '8'
+
+services:
+  - 'docker'
+
+cache:
+  directories:
+    - 'node_modules'
+
+install:
+  - 'npm install'
+  - 'npm run build'
+
+script:
+  - 'npm run test'
+
+deploy:
+  provider: 'script'
+  script: './docker-deploy.sh'
+  on:
+    tags: true
