@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  node-config-server:
+    build: .
+    image: 'kobionic/node-config-server'
+    container_name: 'node-config-server'
+    restart: 'always'
+    ports:
+      - '20490:20490'
+    volumes:
+      - './config:/app/config:ro'
