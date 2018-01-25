@@ -20,9 +20,19 @@ script:
   - 'npm run test'
 
 deploy:
-  provider: 'script'
-  script: './docker-deploy.sh'
-  skip_cleanup: true
-  on:
-    branch: master
-    tags: true
+  - provider: 'npm'
+    email: '$NPM_EMAIL'
+    api_key:
+      secure: '$NPM_API_KEY'
+    skip_cleanup: true
+    on:
+      branch: 'master'
+      node: '8'
+      tags: true
+  - provider: 'script'
+    script: './docker-deploy.sh'
+    skip_cleanup: true
+    on:
+      branch: 'master'
+      node: '8'
+      tags: true

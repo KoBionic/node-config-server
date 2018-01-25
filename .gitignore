@@ -30,6 +30,7 @@ Thumbs.db
 *.zip
 
 # Project folders/files
+build/
 coverage/
 dist/
 logs/
