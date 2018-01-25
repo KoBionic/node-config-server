@@ -1,27 +1,28 @@
 import { GenericParser } from "../generic.parser";
+import { safeLoad } from "js-yaml";
 import { injectable } from "inversify";
 
 
 /**
- * Parser for transforming JSON string into object.
+ * Parser for transforming YAML string into object.
  *
  * @export
- * @class JSONParser
+ * @class YAMLParser
  * @extends {GenericParser}
  */
 @injectable()
-export class JSONParser extends GenericParser {
+export class YAMLParser extends GenericParser {
 
     /**
      * Transform a string into js object.
      *
-     * @param {string} str the stringified JSON
-     * @returns {*} the parsed JSON into a JavaScript object
-     * @memberof JSONParser
+     * @param {string} str the stringified YAML
+     * @returns {*} the parsed YAML into a JavaScript object
+     * @memberof YAMLParser
      */
     public parse(str: string): any {
         try {
-            return JSON.parse(str);
+            return safeLoad(str);
 
         } catch (err) {
             this.logger.error(err.message);
