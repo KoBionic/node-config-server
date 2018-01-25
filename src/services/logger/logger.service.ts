@@ -148,7 +148,7 @@ export class LoggerService {
         const level = winston.config.colorize(options.level, options.level.toUpperCase());
         const spaces = options.level.length === 4 ? "  " : " ";
 
-        return `${this.timestamp()}\t${level}${spaces}${options.message ? options.message : ""}`;
+        return `${this.timestamp()} ${level}${spaces}${options.message ? options.message : ""}`;
     }
 
     /**
