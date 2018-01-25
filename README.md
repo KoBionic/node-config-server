@@ -1,12 +1,10 @@
 # Node Config Server
 
----
-
-## Build Status
-
-Master: ![Travis-CI](https://travis-ci.org/KoBionic/node-config-server.svg?branch=master)
-
----
+[![npm version](https://img.shields.io/npm/v/@kobionic/node-config-server.svg?style=flat)](https://www.npmjs.com/package/kobionic/node-config-server)
+[![Build Status](https://img.shields.io/travis/KoBionic/node-config-server.svg)](https://travis-ci.org/KoBionic/node-config-server/branches)
+[![Dependencies Status](https://img.shields.io/david/kobionic/node-config-server.svg)](https://david-dm.org/kobionic/node-config-server)
+[![DevDependencies Status](https://img.shields.io/david/dev/kobionic/node-config-server.svg)](https://david-dm.org/kobionic/node-config-server?type=dev)
+[![License](https://img.shields.io/npm/l/@kobionic/node-config-server.svg)](https://github.com/kobionic/node-config-server/blob/master/LICENSE)
 
 Cloud Configuration Server using a RESTful API serving either entire files or their parsed content.
 
