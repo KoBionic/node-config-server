@@ -1,6 +1,6 @@
 # Node Config Server
 
-[![npm version](https://img.shields.io/npm/v/@kobionic/node-config-server.svg?style=flat)](https://www.npmjs.com/package/kobionic/node-config-server)
+[![npm version](https://img.shields.io/npm/v/@kobionic/node-config-server.svg?style=flat)](https://www.npmjs.com/package/@kobionic/node-config-server)
 [![Build Status](https://img.shields.io/travis/KoBionic/node-config-server.svg)](https://travis-ci.org/KoBionic/node-config-server/branches)
 [![Dependencies Status](https://img.shields.io/david/kobionic/node-config-server.svg)](https://david-dm.org/kobionic/node-config-server)
 [![DevDependencies Status](https://img.shields.io/david/dev/kobionic/node-config-server.svg)](https://david-dm.org/kobionic/node-config-server?type=dev)
