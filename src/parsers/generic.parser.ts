@@ -21,9 +21,9 @@ export abstract class GenericParser {
      *
      * @abstract
      * @param {string} str the string to parse
-     * @returns {*} the parsed target content into a JavaScript object
+     * @returns {Promise<any>} the parsed target content into a JavaScript object
      * @memberof GenericParser
      */
-    public abstract parse(str: string): any;
+    public abstract parse(str: string): Promise<any>;
 
 }

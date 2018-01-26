@@ -5,6 +5,7 @@ import { FileReaderService } from "./services/file-reader/file-reader.service";
 import { LoggerService } from "./services/logger/logger.service";
 import { JSONParser } from "./parsers/json/json.parser";
 import { PlainTextParser } from "./parsers/plain-text/plain-text.parser";
+import { XMLParser } from "./parsers/xml/xml.parser";
 import { YAMLParser } from "./parsers/yaml/yaml.parser";
 
 
@@ -14,6 +15,7 @@ const Container = new InversifyContainer();
 // Bind parsers
 Container.bind<JSONParser>(JSONParser).to(JSONParser).inSingletonScope();
 Container.bind<PlainTextParser>(PlainTextParser).to(PlainTextParser).inSingletonScope();
+Container.bind<XMLParser>(XMLParser).to(XMLParser).inSingletonScope();
 Container.bind<YAMLParser>(YAMLParser).to(YAMLParser).inSingletonScope();
 
 // Bind services
@@ -25,6 +27,7 @@ Container.bind<LoggerService>(LoggerService).to(LoggerService).inSingletonScope(
 const Parsers = {
     JSON: JSONParser,
     PLAIN_TEXT: PlainTextParser,
+    XML: XMLParser,
     YAML: YAMLParser
 };
 

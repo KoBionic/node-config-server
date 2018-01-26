@@ -8,5 +8,6 @@ export enum FileType {
     JSON = "json",
     TXT = "txt",
     XML = "xml",
-    YAML = "yml"
+    YAML = "yaml",
+    YML = "yml"
 }

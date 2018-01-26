@@ -21,7 +21,7 @@ import * as serveFavicon from "serve-favicon";
 export class NodeConfigServer {
 
     /** The API URL. */
-    public static readonly API_URL: string = "/api/1";
+    public static readonly API_URL: string = "/api/v1";
 
     /** The Express Application instance. */
     public app: express.Application;

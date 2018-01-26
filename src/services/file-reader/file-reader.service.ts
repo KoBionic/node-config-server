@@ -60,13 +60,22 @@ export class FileReaderService {
                     parser = Container.get(Parsers.JSON);
                     break;
 
+                case FileType.XML:
+                    parser = Container.get(Parsers.XML);
+                    break;
+
+                case FileType.YAML:
+                case FileType.YML:
+                    parser = Container.get(Parsers.YAML);
+                    break;
+
                 default:
                     this.logger.debug("Unknown file type:", fileType);
                     parser = Container.get(Parsers.PLAIN_TEXT);
             }
 
             // Parse data using the correct parser
-            obj = parser.parse(data);
+            obj = await parser.parse(data);
 
             return obj;
 

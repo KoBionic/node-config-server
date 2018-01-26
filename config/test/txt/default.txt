@@ -1,0 +1,21 @@
+This example illustrates how to write plain text in an HTML file. Blank lines (as next line) are ignored. Similarly, if you press the Enter key, you will not get a new paragraph. To illustrate this I am pressing Enter right here ... and as you can see, the line continue. If you want to break the line you need to enter the "P" tag, like right here ...
+The P tag will give you a blank line and start the paragraph in the next line. As it happened in the prior paragraph. If all you want is a line break without a blank line, then use the BR tag, like right here...
+See what happened?
+
+If you want to include text "as is" like the one you are just reading
+all you need to is use the PRE tag. This will allow you to display
+text exactly as you type it.  It will give you a line break wherever
+you press Enter, like here....
+This is very useful for pre-formatted text like tables, etc. For example:
+
+STUDENT ID    NAME                RECITATION SECTION
+----------    -----------------   ------------------
+eb48          Evelyn Barry                 A
+josee         Alberto Espinosa             B
+sh6f          Se-Joon Hong                 C
+
+      \|||/
+      (o o)
+--ooO--(_)--Ooo--
+
+You signal the end of the pre-formatted text with the /PRE tag.
