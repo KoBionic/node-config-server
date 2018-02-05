@@ -75,9 +75,9 @@ export class NodeConfigServer {
             this.logger.info(`master ${process.pid} is running`);
 
             // Fork workers
-            os.cpus().forEach(cpu => {
+            for (let step = 0; step < this.getCpusNumber(); step++) {
                 cluster.fork();
-            });
+            }
 
             cluster.on("exit", (worker, code, signal) => {
                 this.logger.error(`worker ${worker.process.pid} died`);
@@ -114,6 +114,21 @@ export class NodeConfigServer {
     private routes(): void {
         this.app.use("/", EurekaClientRouter);
         this.app.use(`${NodeConfigServer.API_URL}/*`, ConfigReaderRouter);
+    }
+
+    /**
+     * Returns the CPUs number, either getting it from an environment variable or by the OS.
+     *
+     * @private
+     * @returns {number} the number of CPUs
+     * @memberof OpenSesameServer
+     */
+    private getCpusNumber(): number {
+        const osNumber = os.cpus().length;
+        const envNumber = parseInt(process.env.CPUS_NUMBER, 10);
+        const cpus = envNumber ? envNumber : osNumber;
+
+        return cpus <= 0 ? osNumber : cpus;
     }
 
     /**
