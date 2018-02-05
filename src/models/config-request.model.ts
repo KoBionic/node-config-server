@@ -82,10 +82,14 @@ export class ConfigRequest {
             // Check if folder is a directory
             const isFolder = (await statAsync(pathToFolder)).isDirectory();
             if (isFolder) {
+                // Set folder path if sequence is a folder
                 this.folderPath = pathToFolder;
 
             } else {
-                this.filename = pathToFolder.substring(pathToFolder.lastIndexOf("/") + 1);
+                // Set folder path & filename if sequence ends with a file and get out of loop
+                const parts = pathToFolder.split("/");
+                this.filename = parts.pop();
+                this.folderPath = parts.join("/");
                 break;
             }
         }
