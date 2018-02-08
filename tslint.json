@@ -223,7 +223,7 @@
     "no-parameter-properties": true,
     "no-redundant-jsdoc": false,
     "no-reference-import": true,
-    "no-unnecessary-callback-wrapper": true,
+    "no-unnecessary-callback-wrapper": false,
     "no-unnecessary-initializer": true,
     "no-unnecessary-qualifier": true,
     "no-unnecessary-type-assertion": true,
