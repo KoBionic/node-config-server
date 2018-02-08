@@ -1,8 +1,8 @@
 import { Container, Services } from "./inversify.config";
-import { LoggerService } from "./services/logger/logger.service";
-import { EurekaClientService } from "./services/eureka-client/eureka-client.service";
+import { EurekaClientService } from "./services/eureka-client";
 import { Router as EurekaClientRouter } from "./routers/eureka-client/eureka-client.router";
 import { Router as ConfigReaderRouter } from "./routers/config-reader/config-reader.router";
+import * as logger from "./services/logger";
 import * as bodyParser from "body-parser";
 import * as cluster from "cluster";
 import * as express from "express";
@@ -32,9 +32,6 @@ export class NodeConfigServer {
     /** The server port number. */
     public port: string | number;
 
-    /** The application logger. */
-    private logger: LoggerService;
-
     /** The Eureka client service. */
     private eureka: EurekaClientService;
 
@@ -50,7 +47,6 @@ export class NodeConfigServer {
         this.port = process.env.PORT || 20490;
         this.app.set("port", this.port);
 
-        this.logger = Container.get(Services.LOGGER);
         this.eureka = Container.get(Services.EUREKA);
 
         this.configure();
@@ -72,7 +68,7 @@ export class NodeConfigServer {
      */
     public start(): void {
         if (cluster.isMaster) {
-            this.logger.info(`master ${process.pid} is running`);
+            logger.info(`master ${process.pid} is running`);
 
             // Fork workers
             for (let step = 0; step < this.getCpusNumber(); step++) {
@@ -80,7 +76,7 @@ export class NodeConfigServer {
             }
 
             cluster.on("exit", (worker, code, signal) => {
-                this.logger.error(`worker ${worker.process.pid} died`);
+                logger.error(`worker ${worker.process.pid} died`);
             });
 
         } else {
@@ -98,8 +94,8 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     private configure(): void {
-        this.app.use(this.logger.getErrorHTTPLogger());
-        this.app.use(this.logger.getInfoHTTPLogger());
+        this.app.use(logger.getErrorHTTPLogger());
+        this.app.use(logger.getInfoHTTPLogger());
         this.app.use(bodyParser.json({ limit: "10mb" }));
         this.app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
         this.app.use(serveFavicon(path.join(__dirname, "public", "favicon.ico")));
@@ -141,12 +137,12 @@ export class NodeConfigServer {
     private onError(error: NodeJS.ErrnoException): void {
         switch (error.code) {
             case "EACCES":
-                this.logger.error(`port ${this.port} requires elevated privileges`);
+                logger.error(`port ${this.port} requires elevated privileges`);
                 process.exit(1);
                 break;
 
             case "EADDRINUSE":
-                this.logger.error(`port ${this.port} is already in use`);
+                logger.error(`port ${this.port} is already in use`);
                 process.exit(1);
                 break;
 
@@ -162,7 +158,7 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     private onListening(): void {
-        this.logger.info(`worker ${process.pid} listening on port ${this.port}`);
+        logger.info(`worker ${process.pid} listening on port ${this.port}`);
     }
 
 }

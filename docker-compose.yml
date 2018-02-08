@@ -10,3 +10,14 @@ services:
       - '20490:20490'
     volumes:
       - './config:/app/config:ro'
+    environment:
+      PORT: 20490
+      CPUS_NUMBER: 4
+      LOG_DIR: './logs'
+      LOG_LEVEL: 'info'
+      LOG_NAME: 'node-config-server'
+      LOG_PRINT_ID: 'false'
+      NODE_CONFIG_DIR: './config'
+      EUREKA_CLIENT: 'true'
+      EUREKA_SERVER_HOST: 'localhost'
+      EUREKA_SERVER_PORT: 8761

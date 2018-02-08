@@ -1,5 +1,5 @@
 import { Container, Services } from "../../inversify.config";
-import { FileReaderService } from "./file-reader.service";
+import { FileReaderService } from "./";
 import * as path from "path";
 
 const DIR = path.resolve(__dirname, "../../..", "config/test/v1");

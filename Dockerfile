@@ -7,8 +7,7 @@ WORKDIR /app
 COPY . .
 
 ENV NODE_ENV=production \
-    LOG_DIR=/var/log \
-    LOG_LEVEL=info
+    LOG_DIR=/var/log
 
 RUN npm install
 

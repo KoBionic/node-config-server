@@ -1,5 +1,3 @@
-import { Container, Services } from "../inversify.config";
-import { LoggerService } from "../services/logger/logger.service";
 import { injectable } from "inversify";
 
 
@@ -12,9 +10,6 @@ import { injectable } from "inversify";
  */
 @injectable()
 export abstract class GenericParser {
-
-    /** The application logger. */
-    protected logger: LoggerService = Container.get(Services.LOGGER);
 
     /**
      * Parses the target type stringified object to transform it into a JavaScript object.

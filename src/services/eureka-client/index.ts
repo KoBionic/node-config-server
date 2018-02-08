@@ -1,8 +1,7 @@
-import { Container, Services } from "../../inversify.config";
-import { LoggerService } from "../logger/logger.service";
 import { ServiceStatus } from "../../models/service-status.enum";
 import { Eureka } from "eureka-js-client";
 import { injectable } from "inversify";
+import * as logger from "../logger";
 import * as os from "os";
 
 
@@ -39,9 +38,6 @@ export class EurekaClientService {
     /** The Eureka Server port. */
     public eurekaServerPort: string | number;
 
-    /** The Eureka client custom logger to use. */
-    public eurekaClientLogger: LoggerService;
-
     /** The Eureka client instance. */
     private client: any;
 
@@ -58,7 +54,6 @@ export class EurekaClientService {
         this.vipAddress = this.appID;
         this.eurekaServerHost = process.env.EUREKA_SERVER_HOST || os.hostname().toLowerCase();
         this.eurekaServerPort = process.env.EUREKA_SERVER_PORT || 8761;
-        this.eurekaClientLogger = Container.get(Services.LOGGER);
     }
 
 
@@ -131,7 +126,7 @@ export class EurekaClientService {
         this.status = ServiceStatus.STARTING;
 
         this.client = new Eureka(<any>{
-            logger: this.eurekaClientLogger,
+            logger: logger,
             instance: {
                 app: this.appID,
                 hostName: this.host,
