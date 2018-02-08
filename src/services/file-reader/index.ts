@@ -1,10 +1,10 @@
 import { FileType } from "../../models/file-type.enum";
-import { LoggerService } from "../logger/logger.service";
-import { Container, Parsers, Services } from "../../inversify.config";
+import { Container, Parsers } from "../../inversify.config";
 import { GenericParser } from "../../parsers/generic.parser";
 import { injectable } from "inversify";
 import { promisify } from "util";
 import { readFile } from "fs";
+import * as logger from "../logger";
 import * as path from "path";
 const readFileAsync = promisify(readFile);
 
@@ -18,20 +18,6 @@ const readFileAsync = promisify(readFile);
 @injectable()
 export class FileReaderService {
 
-    /** The application logger. */
-    private logger: LoggerService;
-
-
-    /**
-     * Default constructor.
-     *
-     * @memberof FileReaderService
-     */
-    constructor() {
-        this.logger = Container.get(Services.LOGGER);
-    }
-
-
     /**
      * Asynchronously reads a directory and search for specified file and returns its content.
      *
@@ -43,10 +29,10 @@ export class FileReaderService {
     public async readFile(dir: string, file: string): Promise<any> {
         try {
             const fileType = file.substring(file.lastIndexOf(".") + 1);
-            this.logger.debug("File type:", fileType);
+            logger.debug("File type:", fileType);
 
             const pathToFile = path.resolve(`${dir}/${file}`);
-            this.logger.debug("File path:", pathToFile);
+            logger.debug("File path:", pathToFile);
 
             // Read file
             const data = await readFileAsync(pathToFile, "utf8");
@@ -70,7 +56,7 @@ export class FileReaderService {
                     break;
 
                 default:
-                    this.logger.debug("Unknown file type:", fileType);
+                    logger.debug("Unknown file type:", fileType);
                     parser = Container.get(Parsers.PLAIN_TEXT);
             }
 
@@ -80,7 +66,7 @@ export class FileReaderService {
             return obj;
 
         } catch (err) {
-            this.logger.debug("Error when reading file:", err.message);
+            logger.debug("Error when reading file:", err.message);
             throw err;
         }
     }

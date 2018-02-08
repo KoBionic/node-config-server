@@ -1,16 +1,10 @@
-import { LoggerService } from "./logger.service";
-import { Container, Services } from "../../inversify.config";
+import * as logger from "./";
 import * as sinon from "sinon";
 
 
 describe("Logger Service Test Suite", () => {
 
-    let logger: LoggerService;
     let spy: sinon.SinonSpy;
-
-    beforeAll(() => {
-        logger = Container.get(Services.LOGGER);
-    });
 
     describe("Console logging testing", () => {
         it("should print a debug message", () => {

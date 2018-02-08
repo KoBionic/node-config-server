@@ -2,8 +2,8 @@ import { GenericRouter } from "../generic.router";
 import { Container, Services } from "../../inversify.config";
 import { ConfigRequest } from "../../models/config-request.model";
 import { NodeConfigServer } from "../../node-config-server";
-import { LoggerService } from "../../services/logger/logger.service";
-import { FileReaderService } from "../../services/file-reader/file-reader.service";
+import { FileReaderService } from "../../services/file-reader";
+import * as logger from "../../services/logger";
 import * as express from "express";
 
 
@@ -21,9 +21,6 @@ class ConfigReaderRouter extends GenericRouter {
     /** The file reader service. */
     private fileReaderService: FileReaderService;
 
-    /** The application logger. */
-    private logger: LoggerService;
-
 
     /**
      * Default constructor.
@@ -34,7 +31,6 @@ class ConfigReaderRouter extends GenericRouter {
         super();
         this.router = express.Router();
         this.fileReaderService = Container.get(Services.FILE_READER);
-        this.logger = Container.get(Services.LOGGER);
         this.registerRoutes();
     }
 
@@ -59,16 +55,16 @@ class ConfigReaderRouter extends GenericRouter {
      */
     private readFileFromURL(req: express.Request, res: express.Response, next: express.NextFunction): void {
         // Parse request URL and returns an array of parts
-        this.logger.debug("Original URL:", req.originalUrl);
+        logger.debug("Original URL:", req.originalUrl);
         const url = req.originalUrl.replace(NodeConfigServer.API_URL, "");
-        this.logger.debug("Formatted URL:", url);
+        logger.debug("Formatted URL:", url);
 
         if (url.length > 1) {
             ConfigRequest
                 .build(url)
                 .then(configRequest => {
                     if (!configRequest.filename) {
-                        this.logger.debug("No filename provided");
+                        logger.debug("No filename provided");
                         res
                             .status(400)
                             .end();
@@ -90,7 +86,7 @@ class ConfigReaderRouter extends GenericRouter {
                     }
                 })
                 .catch(reason => {
-                    this.logger.debug(reason);
+                    logger.debug(reason);
                     // Return HTTP 404 status code if error is about a not found directory or file
                     res
                         .status(reason.code === "ENOENT" ? 404 : 500)
@@ -98,7 +94,7 @@ class ConfigReaderRouter extends GenericRouter {
                 });
 
         } else {
-            this.logger.debug("Nothing to process");
+            logger.debug("Nothing to process");
             res
                 .status(400)
                 .end();

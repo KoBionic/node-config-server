@@ -1,7 +1,6 @@
-import { Container, Services } from "../inversify.config";
-import { LoggerService } from "../services/logger/logger.service";
 import { stat } from "fs";
 import { promisify } from "util";
+import * as logger from "../services/logger";
 import * as path from "path";
 const statAsync = promisify(stat);
 
@@ -32,9 +31,6 @@ export class ConfigRequest {
     /** The URL to parse. */
     private readonly url: string;
 
-    /** The application logger. */
-    private logger: LoggerService;
-
 
     /**
      * Private constructor.
@@ -44,7 +40,6 @@ export class ConfigRequest {
      */
     private constructor(url: string) {
         this.url = url;
-        this.logger = Container.get(Services.LOGGER);
         this.configDirectory = process.env.NODE_CONFIG_DIR || path.resolve(__dirname, "../..", "config");
     }
 
@@ -72,12 +67,12 @@ export class ConfigRequest {
      */
     private async setFields(): Promise<void> {
         const parsedUrl = this.url.match(this.urlPartsRegExp);
-        this.logger.debug("Parsed URL:", parsedUrl.join("/"));
+        logger.debug("Parsed URL:", parsedUrl.join("/"));
 
         let pathToFolder = path.resolve(this.configDirectory);
         while (parsedUrl.length) {
             pathToFolder = path.join(pathToFolder, parsedUrl.shift());
-            this.logger.debug("Part:", pathToFolder);
+            logger.debug("Part:", pathToFolder);
 
             // Check if folder is a directory
             const isFolder = (await statAsync(pathToFolder)).isDirectory();
@@ -96,9 +91,9 @@ export class ConfigRequest {
 
         this.configFields = parsedUrl;
 
-        this.logger.debug("Folder path:", this.folderPath);
-        this.logger.debug("Filename:", this.filename);
-        this.logger.debug("Config fields:", this.configFields.join("/"));
+        logger.debug("Folder path:", this.folderPath);
+        logger.debug("Filename:", this.filename);
+        logger.debug("Config fields:", this.configFields.join("/"));
     }
 
 }
