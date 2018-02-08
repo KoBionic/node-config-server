@@ -1,5 +1,6 @@
 import { GenericParser } from "../generic.parser";
 import { injectable } from "inversify";
+import * as logger from "../../services/logger";
 
 
 /**
@@ -24,7 +25,7 @@ export class JSONParser extends GenericParser {
             return JSON.parse(str);
 
         } catch (err) {
-            this.logger.error(err.message);
+            logger.error(err.message);
             throw err;
         }
     }

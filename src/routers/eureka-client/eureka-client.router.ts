@@ -1,6 +1,6 @@
 import { GenericRouter } from "../generic.router";
 import { Container, Services } from "../../inversify.config";
-import { EurekaClientService } from "../../services/eureka-client/eureka-client.service";
+import { EurekaClientService } from "../../services/eureka-client";
 import * as express from "express";
 
 

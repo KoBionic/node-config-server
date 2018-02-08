@@ -1,8 +1,7 @@
 import "reflect-metadata";
 import { Container as InversifyContainer } from "inversify";
-import { EurekaClientService } from "./services/eureka-client/eureka-client.service";
-import { FileReaderService } from "./services/file-reader/file-reader.service";
-import { LoggerService } from "./services/logger/logger.service";
+import { EurekaClientService } from "./services/eureka-client";
+import { FileReaderService } from "./services/file-reader";
 import { JSONParser } from "./parsers/json/json.parser";
 import { PlainTextParser } from "./parsers/plain-text/plain-text.parser";
 import { XMLParser } from "./parsers/xml/xml.parser";
@@ -21,7 +20,6 @@ Container.bind<YAMLParser>(YAMLParser).to(YAMLParser).inSingletonScope();
 // Bind services
 Container.bind<EurekaClientService>(EurekaClientService).to(EurekaClientService).inSingletonScope();
 Container.bind<FileReaderService>(FileReaderService).to(FileReaderService).inSingletonScope();
-Container.bind<LoggerService>(LoggerService).to(LoggerService).inSingletonScope();
 
 /** Application content parsers. */
 const Parsers = {
@@ -34,7 +32,6 @@ const Parsers = {
 /** Application services. */
 const Services = {
     EUREKA: EurekaClientService,
-    LOGGER: LoggerService,
     FILE_READER: FileReaderService
 };
 

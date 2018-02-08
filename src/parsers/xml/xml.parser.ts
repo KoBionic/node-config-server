@@ -1,6 +1,7 @@
 import { GenericParser } from "../generic.parser";
 import { injectable } from "inversify";
 import { parseString } from "xml2js";
+import * as logger from "../../services/logger";
 
 
 /**
@@ -24,7 +25,7 @@ export class XMLParser extends GenericParser {
         return new Promise<any>((resolve, reject) => {
             parseString(str, (err, content) => {
                 if (err) {
-                    this.logger.error(err.message);
+                    logger.error(err.message);
                     reject(err);
                 }
                 resolve(content);
