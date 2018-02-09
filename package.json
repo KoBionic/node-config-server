@@ -23,10 +23,10 @@
   "files": [
     "dist/"
   ],
-  "main": "dist/bin/www.js",
+  "main": "dist/server.js",
   "bin": {
-    "ncs": "dist/bin/www.js",
-    "node-config-server": "dist/bin/www.js"
+    "ncs": "dist/server.js",
+    "node-config-server": "dist/server.js"
   },
   "repository": {
     "type": "git",
