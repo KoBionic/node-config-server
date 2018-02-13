@@ -1,4 +1,3 @@
-import { Container, Services } from "../../inversify.config";
 import { FileReaderService } from "./";
 import * as path from "path";
 
@@ -7,11 +6,7 @@ const DIR = path.resolve(__dirname, "../../..", "config/test/v1");
 
 describe("File Reader Test Suite", () => {
 
-    let fileReaderService: FileReaderService;
-
-    beforeAll(() => {
-        fileReaderService = Container.get(Services.FILE_READER);
-    });
+    const fileReaderService = new FileReaderService();
 
     it("should read a good JSON file", done => {
         fileReaderService.readFile(DIR, "goodFile.json").then(obj => {

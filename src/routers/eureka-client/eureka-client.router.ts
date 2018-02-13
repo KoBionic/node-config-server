@@ -1,6 +1,5 @@
 import { GenericRouter } from "../generic.router";
-import { Container, Services } from "../../inversify.config";
-import { EurekaClientService } from "../../services/eureka-client";
+import { Eureka } from "../../services/eureka-client";
 import * as express from "express";
 
 
@@ -15,9 +14,6 @@ class EurekaClientRouter extends GenericRouter {
     /** The Configuration Reader Express router. */
     public router: express.Router;
 
-    /** The Eureka client service. */
-    private eurekaService: EurekaClientService;
-
 
     /**
      * Default constructor.
@@ -27,7 +23,6 @@ class EurekaClientRouter extends GenericRouter {
     constructor() {
         super();
         this.router = express.Router();
-        this.eurekaService = Container.get(Services.EUREKA);
         this.registerRoutes();
     }
 
@@ -54,7 +49,7 @@ class EurekaClientRouter extends GenericRouter {
     private health(req: express.Request, res: express.Response, next: express.NextFunction): void {
         res
             .status(200)
-            .send(this.eurekaService.getHealthCheck());
+            .send(Eureka.getHealthCheck());
     }
 
     /**
@@ -69,7 +64,7 @@ class EurekaClientRouter extends GenericRouter {
     private info(req: express.Request, res: express.Response, next: express.NextFunction): void {
         res
             .status(200)
-            .send(this.eurekaService.getInfo());
+            .send(Eureka.getInfo());
     }
 
 }

@@ -1,14 +1,9 @@
 import { JSONParser } from "./json.parser";
-import { Container, Parsers } from "../../inversify.config";
 
 
 describe("JSON Parser Test Suite", () => {
 
-    let jsonParser: JSONParser;
-
-    beforeAll(() => {
-        jsonParser = Container.get(Parsers.JSON);
-    });
+    const jsonParser = new JSONParser();
 
     it("should parse an empty object '{}' JSON file", done => {
         const str = "{}";
