@@ -1,6 +1,5 @@
 import { GenericParser } from "../generic.parser";
 import { safeLoad } from "js-yaml";
-import { injectable } from "inversify";
 import * as logger from "../../services/logger";
 
 
@@ -11,7 +10,6 @@ import * as logger from "../../services/logger";
  * @class YAMLParser
  * @extends {GenericParser}
  */
-@injectable()
 export class YAMLParser extends GenericParser {
 
     /**

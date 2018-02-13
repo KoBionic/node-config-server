@@ -1,7 +1,6 @@
-import { Container, Services } from "./inversify.config";
-import { EurekaClientService } from "./services/eureka-client";
 import { Router as EurekaClientRouter } from "./routers/eureka-client/eureka-client.router";
 import { Router as ConfigReaderRouter } from "./routers/config-reader/config-reader.router";
+import { Eureka } from "./services/eureka-client";
 import * as logger from "./services/logger";
 import * as bodyParser from "body-parser";
 import * as cluster from "cluster";
@@ -32,9 +31,6 @@ export class NodeConfigServer {
     /** The server port number. */
     public port: string | number;
 
-    /** The Eureka client service. */
-    private eureka: EurekaClientService;
-
 
     /**
      * Default constructor.
@@ -47,15 +43,13 @@ export class NodeConfigServer {
         this.port = process.env.PORT || 20490;
         this.app.set("port", this.port);
 
-        this.eureka = Container.get(Services.EUREKA);
-
         this.configure();
         this.routes();
 
         // Start Eureka client only if EUREKA_CLIENT is set to true
         if (process.env.EUREKA_CLIENT === "true") {
-            this.eureka.init(this.host, this.port);
-            this.eureka.start();
+            Eureka.init(this.host, this.port);
+            Eureka.start();
         }
     }
 

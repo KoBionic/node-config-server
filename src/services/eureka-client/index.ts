@@ -1,6 +1,5 @@
 import { ServiceStatus } from "../../models/service-status.enum";
-import { Eureka } from "eureka-js-client";
-import { injectable } from "inversify";
+import { Eureka as EurekaJS } from "eureka-js-client";
 import * as logger from "../logger";
 import * as os from "os";
 
@@ -11,8 +10,7 @@ import * as os from "os";
  * @export
  * @class EurekaClientService
  */
-@injectable()
-export class EurekaClientService {
+class EurekaClientService {
 
     /** The application's health status. */
     public status: ServiceStatus = ServiceStatus.OUT_OF_SERVICE;
@@ -48,7 +46,7 @@ export class EurekaClientService {
      * @memberof EurekaClientService
      */
     constructor() {
-        this.status = ServiceStatus.STARTING;
+        this.status = ServiceStatus.DOWN;
         this.description = "Configuration server aimed at serving versioned configuration for micro-services.";
         this.appID = "node-config-server";
         this.vipAddress = this.appID;
@@ -125,7 +123,7 @@ export class EurekaClientService {
         this.stop();
         this.status = ServiceStatus.STARTING;
 
-        this.client = new Eureka(<any>{
+        this.client = new EurekaJS(<any>{
             logger: logger,
             instance: {
                 app: this.appID,
@@ -206,3 +204,5 @@ export class EurekaClientService {
     }
 
 }
+
+export const Eureka = new EurekaClientService();

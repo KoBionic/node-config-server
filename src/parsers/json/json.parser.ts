@@ -1,5 +1,4 @@
 import { GenericParser } from "../generic.parser";
-import { injectable } from "inversify";
 import * as logger from "../../services/logger";
 
 
@@ -10,7 +9,6 @@ import * as logger from "../../services/logger";
  * @class JSONParser
  * @extends {GenericParser}
  */
-@injectable()
 export class JSONParser extends GenericParser {
 
     /**

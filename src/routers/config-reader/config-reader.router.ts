@@ -1,5 +1,4 @@
 import { GenericRouter } from "../generic.router";
-import { Container, Services } from "../../inversify.config";
 import { ConfigRequest } from "../../models/config-request.model";
 import { NodeConfigServer } from "../../node-config-server";
 import { FileReaderService } from "../../services/file-reader";
@@ -30,7 +29,7 @@ class ConfigReaderRouter extends GenericRouter {
     constructor() {
         super();
         this.router = express.Router();
-        this.fileReaderService = Container.get(Services.FILE_READER);
+        this.fileReaderService = new FileReaderService();
         this.registerRoutes();
     }
 
