@@ -42,8 +42,10 @@
   },
   "dependencies": {
     "body-parser": "1.18.2",
+    "cors": "2.8.4",
     "eureka-js-client": "4.4.0",
     "express": "4.16.2",
+    "helmet": "3.11.0",
     "js-yaml": "3.10.0",
     "moment": "2.20.1",
     "morgan": "1.9.0",
@@ -54,8 +56,10 @@
   },
   "devDependencies": {
     "@types/body-parser": "1.16.8",
+    "@types/cors": "2.8.3",
     "@types/eureka-js-client": "4.3.1",
     "@types/express": "4.11.1",
+    "@types/helmet": "0.0.37",
     "@types/jest": "22.1.2",
     "@types/js-yaml": "3.10.1",
     "@types/morgan": "1.7.35",
