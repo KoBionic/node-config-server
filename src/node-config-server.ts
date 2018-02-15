@@ -4,7 +4,9 @@ import { Eureka } from "./services/eureka-client";
 import * as logger from "./services/logger";
 import * as bodyParser from "body-parser";
 import * as cluster from "cluster";
+import * as cors from "cors";
 import * as express from "express";
+import * as helmet from "helmet";
 import * as http from "http";
 import * as os from "os";
 import * as path from "path";
@@ -43,8 +45,8 @@ export class NodeConfigServer {
         this.port = process.env.PORT || 20490;
         this.app.set("port", this.port);
 
-        this.configure();
-        this.routes();
+        this.addMiddlewares();
+        this.registerRoutes();
 
         // Start Eureka client only if EUREKA_CLIENT is set to true
         if (process.env.EUREKA_CLIENT === "true") {
@@ -82,12 +84,14 @@ export class NodeConfigServer {
     }
 
     /**
-     * Configures application.
+     * Adds Express middlewares to the application.
      *
      * @private
      * @memberof NodeConfigServer
      */
-    private configure(): void {
+    private addMiddlewares(): void {
+        if (process.env.CORS !== "false") this.app.use(cors());
+        if (process.env.SECURITY !== "false") this.app.use(helmet());
         this.app.use(logger.getErrorHTTPLogger());
         this.app.use(logger.getInfoHTTPLogger());
         this.app.use(bodyParser.json({ limit: "10mb" }));
@@ -101,7 +105,7 @@ export class NodeConfigServer {
      * @private
      * @memberof NodeConfigServer
      */
-    private routes(): void {
+    private registerRoutes(): void {
         this.app.use("/", EurekaClientRouter);
         this.app.use(`${NodeConfigServer.API_URL}/*`, ConfigReaderRouter);
     }
