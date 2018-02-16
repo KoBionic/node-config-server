@@ -52,9 +52,9 @@ winston.configure({
  *
  * @export
  * @param {string} level the logging level
- * @param {...Array<string>} messages the messages to log
+ * @param {...Array<any>} messages the messages to log
  */
-export function log(level: string, ...messages: Array<string>): void {
+export function log(level: string, ...messages: Array<any>): void {
     winston.log(level, messages.join(" "));
 }
 
@@ -62,9 +62,9 @@ export function log(level: string, ...messages: Array<string>): void {
  * Prints a debug message on the console.
  *
  * @export
- * @param {...Array<string>} messages the messages to log
+ * @param {...Array<any>} messages the messages to log
  */
-export function debug(...messages: Array<string>): void {
+export function debug(...messages: Array<any>): void {
     winston.log("debug", messages.join(" "));
 }
 
@@ -72,9 +72,9 @@ export function debug(...messages: Array<string>): void {
  * Prints an error message on the console.
  *
  * @export
- * @param {...Array<string>} messages the messages to log
+ * @param {...Array<any>} messages the messages to log
  */
-export function error(...messages: Array<string>): void {
+export function error(...messages: Array<any>): void {
     winston.log("error", messages.join(" "));
 }
 
@@ -82,9 +82,9 @@ export function error(...messages: Array<string>): void {
  * Prints an info message on the console.
  *
  * @export
- * @param {...Array<string>} messages the messages to log
+ * @param {...Array<any>} messages the messages to log
  */
-export function info(...messages: Array<string>): void {
+export function info(...messages: Array<any>): void {
     winston.log("info", messages.join(" "));
 }
 
@@ -92,9 +92,9 @@ export function info(...messages: Array<string>): void {
  * Prints a warn message on the console.
  *
  * @export
- * @param {...Array<string>} messages the messages to log
+ * @param {...Array<any>} messages the messages to log
  */
-export function warn(...messages: Array<string>): void {
+export function warn(...messages: Array<any>): void {
     winston.log("warn", messages.join(" "));
 }
 
