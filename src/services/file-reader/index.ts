@@ -1,7 +1,9 @@
 import { FileType } from "../../models/file-type.enum";
-import { Container, Parsers } from "../../inversify.config";
 import { GenericParser } from "../../parsers/generic.parser";
-import { injectable } from "inversify";
+import { JSONParser } from "../../parsers/json/json.parser";
+import { PlainTextParser } from "../../parsers/plain-text/plain-text.parser";
+import { XMLParser } from "../../parsers/xml/xml.parser";
+import { YAMLParser } from "../../parsers/yaml/yaml.parser";
 import { promisify } from "util";
 import { readFile } from "fs";
 import * as logger from "../logger";
@@ -15,7 +17,6 @@ const readFileAsync = promisify(readFile);
  * @export
  * @class FileReaderService
  */
-@injectable()
 export class FileReaderService {
 
     /**
@@ -43,21 +44,21 @@ export class FileReaderService {
 
             switch (fileType.toLowerCase()) {
                 case FileType.JSON:
-                    parser = Container.get(Parsers.JSON);
+                    parser = new JSONParser();
                     break;
 
                 case FileType.XML:
-                    parser = Container.get(Parsers.XML);
+                    parser = new XMLParser();
                     break;
 
                 case FileType.YAML:
                 case FileType.YML:
-                    parser = Container.get(Parsers.YAML);
+                    parser = new YAMLParser();
                     break;
 
                 default:
                     logger.debug("Unknown file type:", fileType);
-                    parser = Container.get(Parsers.PLAIN_TEXT);
+                    parser = new PlainTextParser();
             }
 
             // Parse data using the correct parser

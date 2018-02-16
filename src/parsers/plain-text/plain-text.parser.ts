@@ -1,5 +1,4 @@
 import { GenericParser } from "../generic.parser";
-import { injectable } from "inversify";
 
 
 /**
@@ -9,7 +8,6 @@ import { injectable } from "inversify";
  * @class PlainTextParser
  * @extends {GenericParser}
  */
-@injectable()
 export class PlainTextParser extends GenericParser {
 
     /**

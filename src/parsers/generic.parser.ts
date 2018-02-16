@@ -1,6 +1,3 @@
-import { injectable } from "inversify";
-
-
 /**
  * Generic Parser abstract class.
  *
@@ -8,7 +5,6 @@ import { injectable } from "inversify";
  * @abstract
  * @class GenericParser
  */
-@injectable()
 export abstract class GenericParser {
 
     /**

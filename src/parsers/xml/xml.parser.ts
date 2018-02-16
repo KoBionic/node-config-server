@@ -1,5 +1,4 @@
 import { GenericParser } from "../generic.parser";
-import { injectable } from "inversify";
 import { parseString } from "xml2js";
 import * as logger from "../../services/logger";
 
@@ -11,7 +10,6 @@ import * as logger from "../../services/logger";
  * @class XMLParser
  * @extends {GenericParser}
  */
-@injectable()
 export class XMLParser extends GenericParser {
 
     /**
