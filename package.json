@@ -1,6 +1,6 @@
 {
   "name": "@kobionic/node-config-server",
-  "version": "1.4.0",
+  "version": "1.5.0-SNAPSHOT",
   "private": false,
   "description": "Cloud Configuration Server using a RESTful API serving either entire files or their parsed content.",
   "keywords": [
