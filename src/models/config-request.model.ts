@@ -1,6 +1,7 @@
 import { stat } from "fs";
 import { promisify } from "util";
 import * as logger from "../services/logger";
+import * as AppUtil from "../utils/app";
 import * as path from "path";
 const statAsync = promisify(stat);
 
@@ -22,9 +23,6 @@ export class ConfigRequest {
     /** The configuration fields to look for in the file. */
     public configFields: Array<string>;
 
-    /** The configuration directory where files reside. */
-    private readonly configDirectory: string;
-
     /** The URL parts parsing RegExp. */
     private readonly urlPartsRegExp: RegExp = /([^\/]+)/g;
 
@@ -40,7 +38,6 @@ export class ConfigRequest {
      */
     private constructor(url: string) {
         this.url = url;
-        this.configDirectory = process.env.NODE_CONFIG_DIR || path.resolve(__dirname, "../..", "config");
     }
 
 
@@ -69,7 +66,8 @@ export class ConfigRequest {
         const parsedUrl = this.url.match(this.urlPartsRegExp);
         logger.debug("Parsed URL:", parsedUrl.join("/"));
 
-        let pathToFolder = path.resolve(this.configDirectory);
+        let pathToFolder = path.resolve(AppUtil.CONFIG_DIR);
+
         while (parsedUrl.length) {
             pathToFolder = path.join(pathToFolder, parsedUrl.shift());
             logger.debug("Part:", pathToFolder);
