@@ -1,16 +1,22 @@
 FROM node:8-alpine
 
 LABEL maintainer="Jeremie Rodriguez <contact@jeremierodriguez.com> (https://github.com/jeremiergz)" \
-      description="Cloud Configuration Server using a RESTful API serving either entire files or their parsed content."
+      description="Centralized configuration server providing a dynamic RESTful API, allowing retrieval of entire files content or their parsed properties."
 
 WORKDIR /app
-COPY . .
+COPY package.json LICENSE README.md ./
+
+# Copy build files
+COPY ./src/ ./src/
+COPY copyright-notice.txt gulpfile.ts tsconfig.json ./
+
+RUN npm install && \
+    npm run build && \
+    npm prune --production && \
+    rm -r ./src copyright-notice.txt gulpfile.ts tsconfig.json
 
 ENV NODE_ENV=production \
-    LOG_DIR=/var/log \
-    LOG_LEVEL=info
-
-RUN npm install
+    LOG_DIR=/var/log
 
 EXPOSE 20490
 
