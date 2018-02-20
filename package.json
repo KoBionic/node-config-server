@@ -33,9 +33,9 @@
     "url": "git+https://github.com/KoBionic/node-config-server.git"
   },
   "scripts": {
-    "build": "webpack --progress --config config/webpack.config.ts",
+    "build": "webpack --progress",
     "start": "node dist/server.js",
-    "start:w": "webpack --progress --config config/webpack.config.ts --watch",
+    "start:w": "webpack --progress --watch",
     "test": "NODE_ENV=test LOG_DIR=logs LOG_LEVEL=none jest --coverage --verbose --forceExit",
     "test:cc": "jest --clearCache",
     "version": "echo $npm_package_version"

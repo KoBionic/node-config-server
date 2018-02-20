@@ -6,8 +6,8 @@ import * as CopyPlugin from "copy-webpack-plugin";
 import * as NodemonPlugin from "nodemon-webpack-plugin";
 import * as PermissionsPlugin from "webpack-permissions-plugin";
 // tslint:disable-next-line
-const tsconfig = require("../tsconfig.json");
-const root = path.resolve(__dirname, "..");
+const tsconfig = require("./tsconfig.json");
+const root = path.resolve(__dirname, ".");
 const paths = {
     assets: "public",
     dist: `${root}/${tsconfig.compilerOptions.outDir}`,
