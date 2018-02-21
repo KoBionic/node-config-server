@@ -1,4 +1,4 @@
-import * as logger from "./";
+import * as logger from ".";
 import * as sinon from "sinon";
 
 

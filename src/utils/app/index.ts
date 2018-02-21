@@ -1,4 +1,4 @@
-import * as logger from "../../services/logger";
+import { logger } from "../../services";
 import { readdirSync, statSync } from "fs";
 import * as path from "path";
 
@@ -32,7 +32,7 @@ export function printAppInformation(): void {
         folders: folders.length,
     };
 
-    logger.info(JSON.stringify(metrics, undefined, 2));
+    logger.info(`Config ${JSON.stringify(metrics, undefined, 2)}`);
 }
 
 /**

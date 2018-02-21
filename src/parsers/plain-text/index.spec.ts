@@ -1,4 +1,4 @@
-import { PlainTextParser } from "./plain-text.parser";
+import { PlainTextParser } from ".";
 
 
 describe("Plain Text Parser Test Suite", () => {

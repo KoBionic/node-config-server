@@ -1,8 +1,7 @@
-import { GenericRouter } from "../generic.router";
-import { ConfigRequest } from "../../models/config-request.model";
+import { GenericRouter } from "..";
 import { NodeConfigServer } from "../../node-config-server";
-import { FileReaderService } from "../../services/file-reader";
-import * as logger from "../../services/logger";
+import { ConfigRequest } from "../../models/config-request.model";
+import { FileReaderService, logger } from "../../services";
 import * as express from "express";
 
 

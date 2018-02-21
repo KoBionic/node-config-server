@@ -1,4 +1,4 @@
-import { FileReaderService } from "./";
+import { FileReaderService } from ".";
 import * as path from "path";
 
 const DIR = path.resolve(__dirname, "../../..", "config/test/v1");
