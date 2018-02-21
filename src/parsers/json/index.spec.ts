@@ -1,4 +1,4 @@
-import { JSONParser } from "./json.parser";
+import { JSONParser } from ".";
 
 
 describe("JSON Parser Test Suite", () => {

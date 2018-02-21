@@ -1,6 +1,6 @@
 import { GenericParser } from "../generic.parser";
+import { logger } from "../../services";
 import { safeLoad } from "js-yaml";
-import * as logger from "../../services/logger";
 
 
 /**

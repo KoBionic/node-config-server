@@ -1,9 +1,6 @@
-import { Router as EurekaClientRouter } from "./routers/eureka-client/eureka-client.router";
-import { Router as ConfigReaderRouter } from "./routers/config-reader/config-reader.router";
-import { Eureka } from "./services/eureka-client";
-import * as logger from "./services/logger";
-import * as AppUtil from "./utils/app";
-import * as ServerUtil from "./utils/server";
+import { ConfigReaderRouter, EurekaClientRouter } from "./routers";
+import { Eureka, logger } from "./services";
+import { AppUtil, ServerUtil } from "./utils";
 import * as bodyParser from "body-parser";
 import * as cluster from "cluster";
 import * as cors from "cors";
@@ -11,8 +8,6 @@ import * as express from "express";
 import * as helmet from "helmet";
 import * as http from "http";
 import * as os from "os";
-import * as path from "path";
-import * as serveFavicon from "serve-favicon";
 
 
 /**
@@ -103,7 +98,6 @@ export class NodeConfigServer {
         this.app.use(logger.getInfoHTTPLogger());
         this.app.use(bodyParser.json({ limit: "10mb" }));
         this.app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
-        this.app.use(serveFavicon(path.join(__dirname, "public", "favicon.ico")));
     }
 
     /**

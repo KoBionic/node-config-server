@@ -1,7 +1,7 @@
 import { stat } from "fs";
 import { promisify } from "util";
-import * as logger from "../services/logger";
-import * as AppUtil from "../utils/app";
+import { logger } from "../services";
+import { AppUtil } from "../utils";
 import * as path from "path";
 const statAsync = promisify(stat);
 

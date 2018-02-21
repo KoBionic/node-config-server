@@ -1,6 +1,6 @@
 import { ServiceStatus } from "../../models/service-status.enum";
 import { Eureka as EurekaJS } from "eureka-js-client";
-import * as logger from "../logger";
+import { logger } from "..";
 import * as os from "os";
 
 
@@ -10,7 +10,7 @@ import * as os from "os";
  * @export
  * @class EurekaClientService
  */
-class EurekaClientService {
+export class EurekaClientService {
 
     /** The application's health status. */
     public status: ServiceStatus = ServiceStatus.OUT_OF_SERVICE;
