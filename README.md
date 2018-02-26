@@ -11,6 +11,7 @@ Centralized configuration server providing a dynamic RESTful API, allowing retri
 ## Installation
 
 The Node Config Server project is deployed both on **npm** & the **Docker Hub**.
+Choose which type of installation meets your requirements and follow the appropriate procedure as described below.
 
 ### npm
 
@@ -20,7 +21,7 @@ npm install --global @kobionic/node-config-server
 
 ### Docker
 
-#### Using plain Docker
+#### Using plain-old Docker command
 
 ```bash
 docker run -d --name node-config-server kobionic/node-config-server
@@ -34,16 +35,56 @@ If you want to make it available to services running on your host, use the ```-p
 docker run -d -p 20490:20490 --name node-config-server kobionic/node-config-server
 ```
 
-## Getting Started
+#### Using Docker Compose
 
-First of all, pull this project with Git:
+With Docker Compose, configuration is as easy as writing a *docker-compose.yml* file such as:
+
+```yaml
+version: '3'
+
+services:
+  node-config-server:
+    image: 'kobionic/node-config-server'
+    container_name: 'node-config-server'
+    restart: 'always'
+    ports:
+      - '20490:20490'
+    volumes:
+      - '/path/to/your/config:/app/config:ro'
+```
+
+## Configuration
+
+Configuration of the application is done using environment variables. You can find a list of all available variables by reading this documentation a little bit further.
+
+### Configure with Docker Compose
+
+Configuring the application with Docker Compose only requires adding an **environment** array to your *docker-compose.yml* file.
+
+As an example, if you would like to set the maximum number of *forks* to create when instantiating the server to 2 and add a *correlation ID* to the logger, you need to add this to your *docker-compose.yml* file:
+
+```yaml
+environment:
+  CPUS_NUMBER: 2
+  LOG_PRINT_ID: 'true'
+```
+
+### Configure by setting OS environment variables
+
+Let's use the example above again and set *CPUS_NUMBER* to *2* and *LOG_PRINT_ID* to *true* using environment variables, both on Linux & Windows.
+
+#### On Linux
 
 ```bash
-Using HTTPS:
-git clone https://github.com/KoBionic/node-config-server.git
+export CPUS_NUMBER=2
+export LOG_PRINT_ID=true
+```
 
-Using SSH:
-git clone git@github.com:KoBionic/node-config-server.git
+#### On Windows
+
+```cmd
+set CPUS_NUMBER=2
+set LOG_PRINT_ID=true
 ```
 
 ### Environment variables
@@ -65,7 +106,7 @@ Numerous environment variables can be set to configure the application.
 
 ## Authors
 
-* [**Jeremie Rodriguez**](https://github.com/jeremiergz) <[contact@jeremierodriguez.com](mailto:contact@jeremierodriguez.com)> - Main developer
+* [**Jeremie Rodriguez**](https://github.com/jeremiergz) &lt;[contact@jeremierodriguez.com](mailto:contact@jeremierodriguez.com)&gt; - Main developer
 
 ## License
 
