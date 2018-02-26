@@ -5,8 +5,8 @@ import * as CleanPlugin from "clean-webpack-plugin";
 import * as NodemonPlugin from "nodemon-webpack-plugin";
 import * as PermissionsPlugin from "webpack-permissions-plugin";
 // tslint:disable-next-line
-const tsconfig = require("../tsconfig.json");
-const root = path.resolve(__dirname, "..");
+const tsconfig = require("./tsconfig.json");
+const root = path.resolve(__dirname, ".");
 const paths = {
     dist: `${root}/${tsconfig.compilerOptions.outDir}`,
     entry: `${root}/src/bin/www.ts`,
