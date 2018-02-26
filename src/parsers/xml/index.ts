@@ -1,6 +1,6 @@
 import { GenericParser } from "../generic.parser";
+import { logger } from "../../services";
 import { parseString } from "xml2js";
-import * as logger from "../../services/logger";
 
 
 /**

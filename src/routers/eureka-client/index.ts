@@ -1,5 +1,5 @@
-import { GenericRouter } from "../generic.router";
-import { Eureka } from "../../services/eureka-client";
+import { GenericRouter } from "..";
+import { Eureka } from "../../services";
 import * as express from "express";
 
 

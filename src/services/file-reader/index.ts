@@ -1,12 +1,8 @@
+import { logger } from "..";
 import { FileType } from "../../models/file-type.enum";
-import { GenericParser } from "../../parsers/generic.parser";
-import { JSONParser } from "../../parsers/json/json.parser";
-import { PlainTextParser } from "../../parsers/plain-text/plain-text.parser";
-import { XMLParser } from "../../parsers/xml/xml.parser";
-import { YAMLParser } from "../../parsers/yaml/yaml.parser";
-import { promisify } from "util";
+import { GenericParser, JSONParser, PlainTextParser, XMLParser, YAMLParser } from "../../parsers";
 import { readFile } from "fs";
-import * as logger from "../logger";
+import { promisify } from "util";
 import * as path from "path";
 const readFileAsync = promisify(readFile);
 
