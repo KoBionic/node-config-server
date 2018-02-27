@@ -1,4 +1,4 @@
-import { ConfigReaderRouter, EurekaClientRouter } from "./routers";
+import { ConfigReaderRouter, EurekaClientRouter, ClientRouter } from "./routers";
 import { Eureka, logger } from "./services";
 import { AppUtil, ServerUtil } from "./utils";
 import * as bodyParser from "body-parser";
@@ -21,14 +21,14 @@ export class NodeConfigServer {
     /** The API URL. */
     public static readonly API_URL: string = "/api/v1";
 
-    /** The Express Application instance. */
-    public app: express.Application;
-
     /** The server hostname. */
-    public host: string;
+    public static readonly HOST: string = os.hostname().toLowerCase();
 
     /** The server port number. */
-    public port: string | number;
+    public static readonly PORT: string | number = process.env.PORT || 20490;
+
+    /** The Express Application instance. */
+    public app: express.Application;
 
 
     /**
@@ -38,16 +38,14 @@ export class NodeConfigServer {
      */
     constructor() {
         this.app = express();
-        this.host = os.hostname().toLowerCase();
-        this.port = process.env.PORT || 20490;
-        this.app.set("port", this.port);
+        this.app.set("port", NodeConfigServer.PORT);
 
         this.addMiddlewares();
         this.registerRoutes();
 
         // Start Eureka client only if EUREKA_CLIENT is set to true
         if (process.env.EUREKA_CLIENT === "true") {
-            Eureka.init(this.host, this.port);
+            Eureka.init(NodeConfigServer.HOST, NodeConfigServer.PORT);
             Eureka.start();
         }
     }
@@ -79,7 +77,7 @@ export class NodeConfigServer {
 
         } else {
             const server = http.createServer(this.app);
-            server.listen(this.port);
+            server.listen(NodeConfigServer.PORT);
             server.on("error", this.onError.bind(this));
             server.on("listening", this.onListening.bind(this));
         }
@@ -108,6 +106,7 @@ export class NodeConfigServer {
      */
     private registerRoutes(): void {
         this.app.use("/", EurekaClientRouter);
+        this.app.use("/client", ClientRouter);
         this.app.use(`${NodeConfigServer.API_URL}/*`, ConfigReaderRouter);
     }
 
@@ -121,12 +120,12 @@ export class NodeConfigServer {
     private onError(error: NodeJS.ErrnoException): void {
         switch (error.code) {
             case "EACCES":
-                logger.error(`Port ${this.port} requires elevated privileges`);
+                logger.error(`Port ${NodeConfigServer.PORT} requires elevated privileges`);
                 process.exit(1);
                 break;
 
             case "EADDRINUSE":
-                logger.error(`Port ${this.port} is already in use`);
+                logger.error(`Port ${NodeConfigServer.PORT} is already in use`);
                 process.exit(1);
                 break;
 
@@ -142,7 +141,7 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     private onListening(): void {
-        logger.info(`Worker ${process.pid} listening on port ${this.port}`);
+        logger.info(`Worker ${process.pid} listening on port ${NodeConfigServer.PORT}`);
     }
 
 }
