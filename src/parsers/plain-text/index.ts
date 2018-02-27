@@ -11,14 +11,14 @@ import { GenericParser } from "../generic.parser";
 export class PlainTextParser extends GenericParser {
 
     /**
-     * Transform a string into a JavaScript object.
+     * Gets a string and passes it on to the caller.
      *
-     * @param {string} str the stringified JSON
-     * @returns {*} the parsed JSON into a JavaScript object
+     * @param {string} str the parsed string content
+     * @returns {Promise<any>} the passed on string content
      * @memberof PlainTextParser
      */
-    public parse(str: string): any {
-        return str;
+    public parse(str: string): Promise<any> {
+        return Promise.resolve(str);
     }
 
 }

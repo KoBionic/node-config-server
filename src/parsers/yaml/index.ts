@@ -13,19 +13,20 @@ import { safeLoad } from "js-yaml";
 export class YAMLParser extends GenericParser {
 
     /**
-     * Transform a string into js object.
+     * Transforms a YAML string into a JavaScript object.
      *
      * @param {string} str the stringified YAML
-     * @returns {*} the parsed YAML into a JavaScript object
+     * @returns {Promise<any>} the parsed YAML as a JavaScript object
      * @memberof YAMLParser
      */
-    public parse(str: string): any {
+    public parse(str: string): Promise<any> {
         try {
-            return safeLoad(str);
+            return Promise.resolve(safeLoad(str));
 
         } catch (err) {
             logger.error(err.message);
-            throw err;
+
+            return Promise.reject(err);
         }
     }
 

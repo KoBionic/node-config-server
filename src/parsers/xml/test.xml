@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+    <movie>
+        <name>The Prestige</name>
+        <director>Christopher Nolan</director>
+        <writer>Jonathan Nolan</writer>
+        <writer>Christopher Nolan</writer>
+        <year>2006</year>
+        <actor>Christian Bale</actor>
+        <actor>Hugh Jackman</actor>
+        <actor>Scarlett Johansson</actor>
+        <duration>130</duration>
+        <watched>true</watched>
+    </movie>
+    <movie>
+        <name>Wind River</name>
+        <director>Taylor Sheridan</director>
+        <writer>Taylor Sheridan</writer>
+        <year>2017</year>
+        <actor>Jeremy Renner</actor>
+        <actor>Elizabeth Olsen</actor>
+        <actor>Julia Jones</actor>
+        <duration>107</duration>
+        <watched>true</watched>
+    </movie>
+</library>

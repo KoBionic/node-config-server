@@ -1,0 +1,25 @@
+library:
+  The Prestige:
+    director: Christopher Nolan
+    writers:
+      - Jonathan Nolan
+      - Christopher Nolan
+    year: 2006
+    actors:
+      - Christian Bale
+      - Hugh Jackman
+      - Scarlett Johansson
+    duration: 130
+    watched: true
+
+  Wind River:
+    director: Taylor Sheridan
+    writers:
+      - Taylor Sheridan
+    year: 2017
+    actors:
+      - Jeremy Renner
+      - Elizabeth Olsen
+      - Julia Jones
+    duration: 107 min
+    watched: true

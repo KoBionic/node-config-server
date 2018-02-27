@@ -12,19 +12,20 @@ import { logger } from "../../services";
 export class JSONParser extends GenericParser {
 
     /**
-     * Transform a string into js object.
+     * Transforms a JSON string into a JavaScript object.
      *
      * @param {string} str the stringified JSON
-     * @returns {*} the parsed JSON into a JavaScript object
+     * @returns {Promise<any>} the parsed JSON as a JavaScript object
      * @memberof JSONParser
      */
-    public parse(str: string): any {
+    public parse(str: string): Promise<any> {
         try {
-            return JSON.parse(str);
+            return Promise.resolve(JSON.parse(str));
 
         } catch (err) {
             logger.error(err.message);
-            throw err;
+
+            return Promise.reject(err);
         }
     }
 
