@@ -1,7 +1,7 @@
 import { GenericRouter } from "..";
-import { NodeConfigServer } from "../../node-config-server";
 import { ConfigRequest } from "../../models/config-request.model";
 import { FileReaderService, logger } from "../../services";
+import { ServerUtil } from "../../utils";
 import * as express from "express";
 
 
@@ -54,7 +54,7 @@ class ConfigReaderRouter extends GenericRouter {
     private readFileFromURL(req: express.Request, res: express.Response, next: express.NextFunction): void {
         // Parse request URL and returns an array of parts
         logger.debug("Original URL:", req.originalUrl);
-        const url = req.originalUrl.replace(NodeConfigServer.API_URL, "");
+        const url = req.originalUrl.replace(ServerUtil.API_URL, "");
         logger.debug("Formatted URL:", url);
 
         if (url.length > 1) {
