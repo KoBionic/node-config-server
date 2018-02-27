@@ -1,8 +1,7 @@
 import { logger } from "..";
-import { AppUtil } from "../../utils";
+import { AppUtil, ServerUtil } from "../../utils";
 import { Tree } from "../../models/tree.model";
 import { TreeNode } from "../../models/tree-node.model";
-import { NodeConfigServer } from "../../node-config-server";
 import { promisify } from "util";
 import * as fs from "fs";
 const readdir = promisify(fs.readdir);
@@ -64,7 +63,7 @@ export class ContentService {
 
             const stats = await stat(fullPath);
             const name = fullPath.replace(`${AppUtil.CONFIG_DIR}/`, "");
-            const url = `http://${NodeConfigServer.HOST}:${NodeConfigServer.PORT}${NodeConfigServer.API_URL}/${name}`;
+            const url = `http://${ServerUtil.HOST}:${ServerUtil.PORT}${ServerUtil.API_URL}/${name}`;
 
             let node: TreeNode;
 
