@@ -1,6 +1,6 @@
 import { GenericParser } from "../generic.parser";
 import { logger } from "../../services";
-import { parseString } from "xml2js";
+import { parseString, OptionsV2, processors } from "xml2js";
 
 
 /**
@@ -13,22 +13,30 @@ import { parseString } from "xml2js";
 export class XMLParser extends GenericParser {
 
     /**
-     * Transform a string into js object.
+     * Transforms an XML string into a JavaScript object.
      *
      * @param {string} str the stringified XML
-     * @returns {*} the parsed XML into a JavaScript object
+     * @returns {Promise<any>} the parsed XML as a JavaScript object
      * @memberof XMLParser
      */
-    public parse(str: string): any {
+    public parse(str: string): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            parseString(str, (err, content) => {
+            const options: OptionsV2 = {
+                explicitArray: false,
+                trim: true,
+                valueProcessors: [
+                    processors.parseNumbers,
+                    processors.parseBooleans,
+                ]
+            };
+
+            parseString(str, options, (err, content) => {
                 if (err) {
                     logger.error(err.message);
                     reject(err);
                 }
                 resolve(content);
             });
-
         });
     }
 

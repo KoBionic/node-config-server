@@ -1,11 +1,11 @@
-import { JSONParser } from ".";
+import { YAMLParser } from ".";
 import { readFileSync } from "fs";
 
 
-describe("JSON Parser Test Suite", () => {
+describe("YAML Parser Test Suite", () => {
 
-    const jsonParser = new JSONParser();
-    const jsonContent = readFileSync(`${__dirname}/test.json`, "utf8");
+    const ymlParser = new YAMLParser();
+    const ymlContent = readFileSync(`${__dirname}/test.yml`, "utf8");
     const expectedJson = {
         library: {
             "The Prestige": {
@@ -40,13 +40,13 @@ describe("JSON Parser Test Suite", () => {
         }
     };
 
-    it("should parse a JSON content as expected", async () => {
-        const obj = await jsonParser.parse(jsonContent);
+    it("should parse a YAML content as expected", async () => {
+        const obj = await ymlParser.parse(ymlContent);
         expect(obj).toEqual(expectedJson);
     });
 
-    it("should throw an error when JSON content is faulty", async () => {
-        await expect(jsonParser.parse(jsonContent.replace("\"year\":", ""))).rejects.toThrowError();
+    it("should throw an error when YAML content is faulty", async () => {
+        await expect(ymlParser.parse(ymlContent.replace("year:", ""))).rejects.toThrowError();
     });
 
 });
