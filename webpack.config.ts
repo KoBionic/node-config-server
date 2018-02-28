@@ -18,6 +18,7 @@ const paths = {
 
 export default {
     entry: paths.entry,
+    devtool: process.env.NODE_ENV === "production" ? "source-map" : "inline-source-map",
     node: {
         __filename: false,
         __dirname: false
@@ -28,8 +29,8 @@ export default {
     ],
     output: {
         filename: paths.output,
-        path: paths.dist,
-        libraryTarget: tsconfig.compilerOptions.module
+        libraryTarget: tsconfig.compilerOptions.module,
+        path: paths.dist
     },
     resolve: {
         extensions: [
@@ -52,14 +53,7 @@ export default {
         ]
     },
     plugins: [
-        new CleanPlugin(
-            [paths.dist],
-            {
-                allowExternal: true,
-                beforeEmit: true,
-                verbose: false
-            }
-        ),
+        new CleanPlugin([paths.dist], { verbose: false }),
         new NodemonPlugin(),
         new webpack.BannerPlugin(
             { banner: fs.readFileSync(paths.license).toString() }

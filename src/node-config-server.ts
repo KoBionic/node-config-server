@@ -48,7 +48,7 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     public start(): void {
-        if (cluster.isMaster) {
+        if (cluster.isMaster && process.env.NODE_ENV !== "development") {
             if (!AppUtil.canContinue()) {
                 logger.error("Configuration folder is not valid");
                 process.exit(1);
