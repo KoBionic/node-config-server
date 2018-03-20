@@ -18,6 +18,6 @@ services:
       LOG_NAME: 'node-config-server'
       LOG_PRINT_ID: 'false'
       NODE_CONFIG_DIR: './config'
-      EUREKA_CLIENT: 'true'
+      EUREKA_CLIENT: 'false'
       EUREKA_SERVER_HOST: 'localhost'
       EUREKA_SERVER_PORT: 8761

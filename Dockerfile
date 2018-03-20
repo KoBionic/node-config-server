@@ -1,7 +1,7 @@
-FROM node:8-alpine
+FROM node:8.10.0-alpine
 
 LABEL maintainer="Jeremie Rodriguez <contact@jeremierodriguez.com> (https://github.com/jeremiergz)" \
-      description="Centralized configuration server providing a dynamic RESTful API, allowing retrieval of entire files content or their parsed properties."
+    description="Centralized configuration server providing a dynamic RESTful API, allowing retrieval of entire files content or their parsed properties."
 
 WORKDIR /app
 COPY package.json LICENSE README.md ./
