@@ -54,9 +54,8 @@ class ConfigReaderRouter extends GenericRouter {
      */
     private readFileFromURL(req: express.Request, res: express.Response, next: express.NextFunction): void {
         // Parse request URL and returns an array of parts
-        logger.debug("Original URL:", req.originalUrl);
-        let url = req.originalUrl.replace(ServerUtil.API_URL, "");
-        url = url.substring(0, url.lastIndexOf("?"));
+        logger.debug("Original URL:", req.baseUrl);
+        const url = req.baseUrl.replace(ServerUtil.API_URL, "");
         logger.debug("Formatted URL:", url);
 
         if (url.length > 1) {
