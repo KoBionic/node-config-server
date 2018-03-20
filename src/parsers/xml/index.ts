@@ -1,6 +1,7 @@
-import { GenericParser } from "../generic.parser";
+import { OptionsV2, parseString, processors } from "xml2js";
+
 import { logger } from "../../services";
-import { parseString, OptionsV2, processors } from "xml2js";
+import { GenericParser } from "../generic.parser";
 
 
 /**

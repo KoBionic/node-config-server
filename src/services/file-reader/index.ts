@@ -1,9 +1,12 @@
+import { readFile } from "fs";
+import * as path from "path";
+import { promisify } from "util";
+
 import { logger } from "..";
 import { FileType } from "../../models/file-type.enum";
+import { Format } from "../../models/format.enum";
 import { GenericParser, JSONParser, PlainTextParser, XMLParser, YAMLParser } from "../../parsers";
-import { readFile } from "fs";
-import { promisify } from "util";
-import * as path from "path";
+
 const readFileAsync = promisify(readFile);
 
 
@@ -20,12 +23,13 @@ export class FileReaderService {
      *
      * @param {string} dir the directory to read
      * @param {string} file the file to look for
+     * @param {Format} [format] forces a parsing format
      * @returns {Promise<any>} the file content
      * @memberof FileReaderService
      */
-    public async readFile(dir: string, file: string): Promise<any> {
+    public async readFile(dir: string, file: string, format?: Format): Promise<any> {
         try {
-            const fileType = file.substring(file.lastIndexOf(".") + 1);
+            let fileType = file.substring(file.lastIndexOf(".") + 1);
             logger.debug("File type:", fileType);
 
             const pathToFile = path.resolve(`${dir}/${file}`);
@@ -34,8 +38,13 @@ export class FileReaderService {
             // Read file
             const data = await readFileAsync(pathToFile, "utf8");
 
+            // Force use of PlainTextParser if Format.STRING is provided
+            if (format === Format.STRING) {
+                logger.debug("Format:", format);
+                fileType = Format.STRING;
+            }
+
             // Parse file
-            let obj = {};
             let parser: GenericParser;
 
             switch (fileType.toLowerCase()) {
@@ -53,12 +62,12 @@ export class FileReaderService {
                     break;
 
                 default:
-                    logger.debug("Unknown file type:", fileType);
+                    logger.debug("Unknown or forced file type:", fileType);
                     parser = new PlainTextParser();
             }
 
             // Parse data using the correct parser
-            obj = await parser.parse(data);
+            const obj = await parser.parse(data);
 
             return obj;
 

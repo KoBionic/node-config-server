@@ -1,5 +1,6 @@
-import { XMLParser } from ".";
 import { readFileSync } from "fs";
+
+import { XMLParser } from ".";
 
 
 describe("XML Parser Test Suite", () => {

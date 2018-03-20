@@ -1,9 +1,11 @@
-import { logger } from "..";
-import { AppUtil, ServerUtil } from "../../utils";
-import { Tree } from "../../models/tree.model";
-import { TreeNode } from "../../models/tree-node.model";
-import { promisify } from "util";
 import * as fs from "fs";
+import { promisify } from "util";
+
+import { logger } from "..";
+import { TreeNode } from "../../models/tree-node.model";
+import { Tree } from "../../models/tree.model";
+import { AppUtil, ServerUtil } from "../../utils";
+
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 
@@ -60,33 +62,26 @@ export class ContentService {
 
         for (const listed of content) {
             const fullPath = `${path}/${listed}`;
-
             const stats = await stat(fullPath);
+
             const name = fullPath.replace(`${AppUtil.CONFIG_DIR}/`, "");
             const url = `http://${ServerUtil.HOST}:${ServerUtil.PORT}${ServerUtil.API_URL}/${name}`;
 
-            let node: TreeNode;
-
-            if (stats.isDirectory()) {
-                node = {
-                    name: name,
-                    type: "folder",
-                    content: await this.addNode(fullPath)
-                };
-
-            } else {
-                node = {
-                    name: name,
-                    type: "file",
-                    url: url
-                };
-            }
+            const node: TreeNode = stats.isDirectory()
+                ? { name: name, shortName: listed, type: "folder", content: await this.addNode(fullPath) }
+                : { name: name, shortName: listed, type: "file", url: url };
 
             logger.debug(`Node added: ${node.name}`);
             nodes.push(node);
         }
 
         this.tree.content = nodes;
+        this.tree.content.sort((prev, curr) => {
+            if (prev.type === "file" && curr.type === "folder") return 1;
+            if (prev.type === "folder" && curr.type === "file") return -1;
+
+            return;
+        });
 
         return nodes;
     }

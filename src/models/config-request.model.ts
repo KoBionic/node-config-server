@@ -1,8 +1,10 @@
 import { stat } from "fs";
+import * as path from "path";
 import { promisify } from "util";
+
 import { logger } from "../services";
 import { AppUtil } from "../utils";
-import * as path from "path";
+
 const statAsync = promisify(stat);
 
 

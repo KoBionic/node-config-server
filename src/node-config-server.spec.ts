@@ -1,17 +1,14 @@
-import { NodeConfigServer } from "./node-config-server";
-import { Application, Response } from "express";
 import * as request from "supertest";
 
-const URL = "api/1/test/v1/";
+import { NodeConfigServer } from "./node-config-server";
+import { ServerUtil } from "./utils";
+
+const URL = `${ServerUtil.API_URL}/test/v1/`;
 
 
 describe("Node Config Server Test Suite", () => {
 
-    let app: Application;
-
-    beforeAll(() => {
-        app = new NodeConfigServer().app;
-    });
+    const app = new NodeConfigServer().app;
 
     it("should return a 200 HTTP code when reading a good JSON file", () => {
         request(app)

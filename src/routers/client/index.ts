@@ -1,6 +1,7 @@
+import * as express from "express";
+
 import { GenericRouter } from "..";
 import { ContentService, logger } from "../../services";
-import * as express from "express";
 
 
 /**

@@ -7,6 +7,7 @@
 export interface TreeNode {
     content?: Array<TreeNode>;
     name: string;
+    shortName: string;
     type: "file" | "folder";
     url?: string;
 }

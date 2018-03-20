@@ -1,12 +1,13 @@
-import { ConfigReaderRouter, EurekaClientRouter, ClientRouter } from "./routers";
-import { Eureka, logger } from "./services";
-import { AppUtil, ServerUtil } from "./utils";
 import * as bodyParser from "body-parser";
 import * as cluster from "cluster";
 import * as cors from "cors";
 import * as express from "express";
 import * as helmet from "helmet";
 import * as http from "http";
+
+import { ClientRouter, ConfigReaderRouter, EurekaClientRouter } from "./routers";
+import { Eureka, logger } from "./services";
+import { AppUtil, ServerUtil } from "./utils";
 
 
 /**
@@ -96,7 +97,7 @@ export class NodeConfigServer {
      */
     private registerRoutes(): void {
         this.app.use("/", EurekaClientRouter);
-        this.app.use("/client", ClientRouter);
+        this.app.use(ServerUtil.UI_CLIENT_URL, ClientRouter);
         this.app.use(`${ServerUtil.API_URL}/*`, ConfigReaderRouter);
     }
 

@@ -3,6 +3,7 @@ import { JSONParser } from "./json";
 import { PlainTextParser } from "./plain-text";
 import { XMLParser } from "./xml";
 import { YAMLParser } from "./yaml";
+
 export {
     GenericParser,
     JSONParser,
