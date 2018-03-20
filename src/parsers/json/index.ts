@@ -1,5 +1,5 @@
-import { GenericParser } from "../generic.parser";
 import { logger } from "../../services";
+import { GenericParser } from "../generic.parser";
 
 
 /**

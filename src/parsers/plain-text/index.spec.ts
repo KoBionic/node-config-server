@@ -1,5 +1,6 @@
-import { PlainTextParser } from ".";
 import { readFileSync } from "fs";
+
+import { PlainTextParser } from ".";
 
 
 describe("Plain Text Parser Test Suite", () => {

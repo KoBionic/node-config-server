@@ -1,11 +1,11 @@
+import * as CleanPlugin from "clean-webpack-plugin";
 import * as fs from "fs";
+import * as NodemonPlugin from "nodemon-webpack-plugin";
 import * as path from "path";
 import * as webpack from "webpack";
-import * as CleanPlugin from "clean-webpack-plugin";
-import * as NodemonPlugin from "nodemon-webpack-plugin";
 import * as PermissionsPlugin from "webpack-permissions-plugin";
-// tslint:disable-next-line
-const tsconfig = require("./tsconfig.json");
+
+const tsconfig = JSON.parse(fs.readFileSync("./tsconfig.json", "utf-8"));
 const root = path.resolve(__dirname, ".");
 const paths = {
     dist: `${root}/${tsconfig.compilerOptions.outDir}`,

@@ -1,8 +1,9 @@
+import * as express from "express";
+
 import { GenericRouter } from "..";
 import { ConfigRequest } from "../../models/config-request.model";
 import { FileReaderService, logger } from "../../services";
 import { ServerUtil } from "../../utils";
-import * as express from "express";
 
 
 /**
@@ -54,7 +55,8 @@ class ConfigReaderRouter extends GenericRouter {
     private readFileFromURL(req: express.Request, res: express.Response, next: express.NextFunction): void {
         // Parse request URL and returns an array of parts
         logger.debug("Original URL:", req.originalUrl);
-        const url = req.originalUrl.replace(ServerUtil.API_URL, "");
+        let url = req.originalUrl.replace(ServerUtil.API_URL, "");
+        url = url.substring(0, url.lastIndexOf("?"));
         logger.debug("Formatted URL:", url);
 
         if (url.length > 1) {
@@ -68,8 +70,12 @@ class ConfigReaderRouter extends GenericRouter {
                             .end();
 
                     } else {
+                        const format = req.query.format
+                            ? req.query.format.toLowerCase()
+                            : undefined;
+
                         // Give file reader URL's first part as directory to look in and second as file to look for
-                        return this.fileReaderService.readFile(configRequest.folderPath, configRequest.filename)
+                        return this.fileReaderService.readFile(configRequest.folderPath, configRequest.filename, format)
                             .then(obj => {
                                 let returnedValue = obj;
 

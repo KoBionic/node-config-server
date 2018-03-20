@@ -1,7 +1,8 @@
-import { ServiceStatus } from "../../models/service-status.enum";
 import { Eureka as EurekaJS } from "eureka-js-client";
-import { logger } from "..";
 import * as os from "os";
+
+import { logger } from "..";
+import { ServiceStatus } from "../../models/service-status.enum";
 
 
 /**

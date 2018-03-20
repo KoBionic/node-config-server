@@ -1,6 +1,7 @@
-import { Router as ClientRouter } from ".";
 import * as express from "express";
 import * as request from "supertest";
+
+import { Router as ClientRouter } from ".";
 
 
 describe("Client Router Test Suite", () => {

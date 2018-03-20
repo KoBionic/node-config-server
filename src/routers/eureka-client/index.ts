@@ -1,6 +1,7 @@
+import * as express from "express";
+
 import { GenericRouter } from "..";
 import { Eureka } from "../../services";
-import * as express from "express";
 
 
 /**

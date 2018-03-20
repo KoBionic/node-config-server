@@ -1,5 +1,6 @@
-import * as ServerUtil from ".";
 import { cpus } from "os";
+
+import * as ServerUtil from ".";
 
 
 describe("Server Util Test Suite", () => {

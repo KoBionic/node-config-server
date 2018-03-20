@@ -1,7 +1,7 @@
+import * as request from "supertest";
+
 import { NodeConfigServer } from "./node-config-server";
 import { ServerUtil } from "./utils";
-import { Response } from "express";
-import * as request from "supertest";
 
 const URL = `${ServerUtil.API_URL}/test/v1/`;
 

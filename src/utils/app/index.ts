@@ -1,6 +1,7 @@
-import { logger } from "../../services";
 import { readdirSync, statSync } from "fs";
 import * as path from "path";
+
+import { logger } from "../../services";
 
 
 /**

@@ -1,5 +1,6 @@
-import { JSONParser } from ".";
 import { readFileSync } from "fs";
+
+import { JSONParser } from ".";
 
 
 describe("JSON Parser Test Suite", () => {

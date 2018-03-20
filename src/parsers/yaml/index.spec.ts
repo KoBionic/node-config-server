@@ -1,5 +1,6 @@
-import { YAMLParser } from ".";
 import { readFileSync } from "fs";
+
+import { YAMLParser } from ".";
 
 
 describe("YAML Parser Test Suite", () => {

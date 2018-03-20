@@ -1,5 +1,6 @@
-import * as logger from ".";
 import * as sinon from "sinon";
+
+import * as logger from ".";
 
 
 describe("Logger Service Test Suite", () => {

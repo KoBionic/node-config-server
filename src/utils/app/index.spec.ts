@@ -1,6 +1,5 @@
-import { logger } from "../../services";
-import { promisify } from "util";
 import * as AppUtil from ".";
+import { logger } from "../../services";
 
 
 describe("App Util Test Suite", () => {
