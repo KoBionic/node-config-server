@@ -5,7 +5,15 @@ import { promisify } from "util";
 import { logger } from "..";
 import { FileType } from "../../models/file-type.enum";
 import { Format } from "../../models/format.enum";
-import { GenericParser, JSONParser, PlainTextParser, XMLParser, YAMLParser } from "../../parsers";
+import {
+    GenericParser,
+    INIParser,
+    JSONParser,
+    PlainTextParser,
+    PropertiesParser,
+    XMLParser,
+    YAMLParser,
+} from "../../parsers";
 
 const readFileAsync = promisify(readFile);
 
@@ -48,11 +56,20 @@ export class FileReaderService {
             let parser: GenericParser;
 
             switch (fileType.toLowerCase()) {
+                case FileType.INI:
+                    parser = new INIParser();
+                    break;
+
                 case FileType.JSON:
                     parser = new JSONParser();
                     break;
 
+                case FileType.PROPERTIES:
+                    parser = new PropertiesParser();
+                    break;
+
                 case FileType.XML:
+                case FileType.XSD:
                     parser = new XMLParser();
                     break;
 
