@@ -1,8 +1,15 @@
 import { readdirSync, statSync } from "fs";
+import * as moment from "moment";
 import * as path from "path";
 
 import { logger } from "../../services";
 
+
+/** Date format used for logging. */
+export const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss.SSS";
+
+/** Morgan HTTP Logger format. */
+export const HTTP_FORMAT = ":method :url :status :response-time ms :remote-addr - :user-agent";
 
 /**
  * The application configuration directory, retrieved either by setting the *NODE_CONFIG_DIR*
@@ -78,4 +85,14 @@ export function canContinue(): boolean {
     }
 
     return go;
+}
+
+/**
+ * Returns a formatted timestamp.
+ *
+ * @export
+ * @returns {string} the formatted timestamp as a string
+ */
+export function timestamp(): string {
+    return moment(Date.now()).format(DATE_FORMAT);
 }

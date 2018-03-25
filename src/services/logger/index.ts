@@ -7,6 +7,9 @@ import { promisify } from "util";
 import { v1 as uuid } from "uuid";
 import * as winston from "winston";
 
+import { AppUtil, ServerUtil } from "../../utils";
+import { WSTransport } from "./transports";
+
 const mkdir = promisify(fs.mkdir);
 const stat = promisify(fs.stat);
 
@@ -15,14 +18,10 @@ const stat = promisify(fs.stat);
 const correlationId = uuid();
 const showId = process.env.LOG_PRINT_ID === "true" ? true : false;
 
-// Date format used for logging
-const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss.SSS";
-
-// Morgan HTTP Logger format
-const HTTP_FORMAT = ":method :url :status :response-time ms :remote-addr - :user-agent";
-
 const loggerName = process.env.LOG_NAME || "node-config-server";
-const filename = `${loggerName}_${moment(Date.now()).format("YYYY-MM-DD")}.log`;
+const logsFolder = process.env.LOG_DIR || "./logs";
+
+const filename = `${logsFolder}/${loggerName}_${moment(Date.now()).format("YYYY-MM-DD")}`;
 
 // Default to create logs directory in app root path if not present
 const logDir = process.env.LOG_DIR || path.resolve(__dirname, "..", "logs");
@@ -34,16 +33,27 @@ stat(logDir)
 winston.configure({
     level: process.env.LOG_LEVEL || "info",
     transports: [
+        new WSTransport(),
+        new winston.transports.Console({
+            formatter: options => formatter(options, true),
+            timestamp: () => moment().format(AppUtil.DATE_FORMAT)
+        }),
         new winston.transports.File({
-            filename: `${process.env.LOG_DIR || "./logs"}/${filename}`,
+            name: "log",
+            filename: `${filename}.log`,
+            json: false,
+            maxsize: 5242880, // 5Mb
+            maxFiles: 5,
+            formatter: options => formatter(options),
+            timestamp: () => moment().format(AppUtil.DATE_FORMAT)
+        }),
+        new winston.transports.File({
+            name: "json",
+            filename: `${filename}.json`,
             json: true,
             maxsize: 5242880, // 5Mb
             maxFiles: 5,
-            timestamp: () => moment().format(DATE_FORMAT)
-        }),
-        new winston.transports.Console({
-            formatter: options => formatter(options),
-            timestamp: () => moment().format(DATE_FORMAT)
+            timestamp: () => moment().format(AppUtil.DATE_FORMAT)
         })
     ]
 });
@@ -106,7 +116,7 @@ export function warn(...messages: Array<any>): void {
  * @returns {RequestHandler} an Express RequestHandler error logger
  */
 export function getErrorHTTPLogger(): RequestHandler {
-    return morgan(HTTP_FORMAT, {
+    return morgan(AppUtil.HTTP_FORMAT, {
         skip: (req, res) => res.statusCode < 400,
         stream: {
             write: message => {
@@ -123,7 +133,7 @@ export function getErrorHTTPLogger(): RequestHandler {
  * @returns {RequestHandler} an Express RequestHandler info logger
  */
 export function getInfoHTTPLogger(): RequestHandler {
-    return morgan(HTTP_FORMAT, {
+    return morgan(AppUtil.HTTP_FORMAT, {
         skip: (req, res) => res.statusCode >= 400,
         stream: {
             write: message => {
@@ -137,25 +147,21 @@ export function getInfoHTTPLogger(): RequestHandler {
  * Returns a custom formatter for the Winston logging output.
  *
  * @param {*} options the options provided by Winston
+ * @param {boolean} [colorize=false] whether output should be colorized or not
  * @returns {string} custom logging formatted string
  */
-function formatter(options: any): string {
-    const level = winston.config.colorize(options.level, options.level.toUpperCase());
+function formatter(options: any, colorize: boolean = false): string {
+    const level = colorize
+        ? winston.config.colorize(options.level, options.level.toUpperCase())
+        : options.level.toUpperCase();
     const spaces = options.level.length === 4 ? "  " : " ";
 
-    return `${showId ? `${correlationId} ` : ""}${timestamp()} ${level}${spaces}${options.message ? options.message : ""}`;
-}
-
-/**
- * Returns a formatted timestamp.
- *
- * @returns {string} the formatted timestamp as a string
- */
-function timestamp(): string {
-    return moment(Date.now()).format(DATE_FORMAT);
+    return `${showId ? `${correlationId} ` : ""}${AppUtil.timestamp()} ${level}${spaces}${options.message ? options.message : ""}`;
 }
 
 // Exported properties
 export {
-    correlationId
+    correlationId,
+    filename,
+    loggerName
 };

@@ -1,5 +1,4 @@
 import * as bodyParser from "body-parser";
-import * as cluster from "cluster";
 import * as cors from "cors";
 import * as express from "express";
 import * as helmet from "helmet";
@@ -49,29 +48,16 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     public start(): void {
-        if (cluster.isMaster && process.env.NODE_ENV !== "development") {
-            if (!AppUtil.canContinue()) {
-                logger.error("Configuration folder is not valid");
-                process.exit(1);
-            }
-            AppUtil.printAppInformation();
-            logger.info(`Master ${process.pid} is running`);
-
-            // Fork workers
-            for (let step = 0; step < ServerUtil.getCpusNumber(); step++) {
-                cluster.fork();
-            }
-
-            cluster.on("exit", (worker, code, signal) => {
-                logger.error(`Worker ${worker.process.pid} died`);
-            });
-
-        } else {
-            const server = http.createServer(this.app);
-            server.listen(ServerUtil.PORT);
-            server.on("error", this.onError.bind(this));
-            server.on("listening", this.onListening.bind(this));
+        if (!AppUtil.canContinue()) {
+            logger.error("Configuration folder is not valid");
+            process.exit(1);
         }
+        AppUtil.printAppInformation();
+
+        const server = http.createServer(this.app);
+        server.listen(ServerUtil.PORT);
+        server.on("error", this.onError.bind(this));
+        server.on("listening", this.onListening.bind(this, ServerUtil.PORT));
     }
 
     /**
@@ -129,10 +115,11 @@ export class NodeConfigServer {
      * Executes some actions on server listening event.
      *
      * @private
+     * @param {number} port the port that is being listened to
      * @memberof NodeConfigServer
      */
-    private onListening(): void {
-        logger.info(`Worker ${process.pid} listening on port ${ServerUtil.PORT}`);
+    private onListening(port: number): void {
+        logger.info(`Server listening on port ${port}`);
     }
 
 }

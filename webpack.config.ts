@@ -16,7 +16,7 @@ const paths = {
 };
 
 
-export default {
+const configuration: webpack.Configuration = {
     entry: paths.entry,
     devtool: process.env.NODE_ENV === "production" ? "source-map" : "inline-source-map",
     node: {
@@ -25,7 +25,9 @@ export default {
     },
     target: tsconfig.compilerOptions.moduleResolution,
     externals: [
-        /^[a-z\-0-9]+$/
+        /^[a-z\-0-9]+$/,
+        "socket.io",
+        "ws"
     ],
     output: {
         filename: paths.output,
@@ -72,3 +74,5 @@ export default {
         })
     ]
 };
+
+export default configuration;
