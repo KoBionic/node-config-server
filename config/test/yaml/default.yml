@@ -1,6 +1,6 @@
-file: default.yml
+file: 'default.yml'
 movies:
-  - The Prestige:
+  - 'The Prestige':
       year: 2006
-  - Wind River:
+  - 'Wind River':
       year: 2017
