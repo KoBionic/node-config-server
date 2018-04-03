@@ -63,10 +63,10 @@ class ConfigReaderRouter extends GenericRouter {
                 .build(url)
                 .then(configRequest => {
                     if (!configRequest.filename) {
-                        logger.debug("No filename provided");
-                        res
-                            .status(400)
-                            .end();
+                        const msg = "No filename provided";
+                        logger.debug(msg);
+                        res.status(400);
+                        next(new Error(msg));
 
                     } else {
                         const format = req.query.format
@@ -82,25 +82,32 @@ class ConfigReaderRouter extends GenericRouter {
                                     returnedValue = this.findValue(returnedValue, part);
                                 });
 
-                                res
-                                    .status(returnedValue !== undefined ? 200 : 404)
-                                    .send(this.normalize(returnedValue));
+                                if (returnedValue !== undefined) {
+                                    res
+                                        .status(200)
+                                        .send(this.normalize(returnedValue));
+
+                                } else {
+                                    const msg = "Requested property not found in file";
+                                    logger.debug(msg);
+                                    res.status(404);
+                                    next(new Error(msg));
+                                }
                             });
                     }
                 })
-                .catch(reason => {
-                    logger.debug(reason);
+                .catch(err => {
+                    logger.debug(err);
                     // Return HTTP 404 status code if error is about a not found directory or file
-                    res
-                        .status(reason.code === "ENOENT" ? 404 : 500)
-                        .end();
+                    res.status(err.code === "ENOENT" ? 404 : 500);
+                    next(err);
                 });
 
         } else {
-            logger.debug("Nothing to process");
-            res
-                .status(400)
-                .end();
+            const msg = "Nothing to process";
+            logger.debug(msg);
+            res.status(400);
+            next(new Error(msg));
         }
     }
 

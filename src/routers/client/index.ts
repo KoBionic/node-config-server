@@ -53,15 +53,14 @@ class ClientRouter extends GenericRouter {
     private async tree(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
         try {
             const tree = await this.contentService.getTree();
-            res
-                .status(200)
-                .send(tree);
+            res.status(200);
+            res["body"] = tree;
+            next();
 
         } catch (err) {
             logger.error("An error occured:", err.message);
-            res
-                .status(500)
-                .end();
+            res.status(500);
+            next(err);
         }
     }
 

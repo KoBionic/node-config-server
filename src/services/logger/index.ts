@@ -7,7 +7,7 @@ import { promisify } from "util";
 import { v1 as uuid } from "uuid";
 import * as winston from "winston";
 
-import { AppUtil, ServerUtil } from "../../utils";
+import { AppUtil } from "../../utils";
 import { WSTransport } from "./transports";
 
 const mkdir = promisify(fs.mkdir);
@@ -30,32 +30,37 @@ stat(logDir)
         mkdir(logDir);
     });
 
+// Create the logger transports array
+const transports: Array<winston.TransportInstance> = [
+    new winston.transports.Console({
+        formatter: options => formatter(options, true),
+        timestamp: () => moment().format(AppUtil.DATE_FORMAT)
+    }),
+    new winston.transports.File({
+        name: "log",
+        filename: `${filename}.log`,
+        json: false,
+        maxsize: 5242880, // 5Mb
+        maxFiles: 5,
+        formatter: options => formatter(options),
+        timestamp: () => moment().format(AppUtil.DATE_FORMAT)
+    }),
+    new winston.transports.File({
+        name: "json",
+        filename: `${filename}.json`,
+        json: true,
+        maxsize: 5242880, // 5Mb
+        maxFiles: 5,
+        timestamp: () => moment().format(AppUtil.DATE_FORMAT)
+    })
+];
+
+// Add a WebSocket transport unless specified otherwise
+if (process.env.LOG_WEBSOCKET !== "false") transports.push(new WSTransport());
+
 winston.configure({
     level: process.env.LOG_LEVEL || "info",
-    transports: [
-        new WSTransport(),
-        new winston.transports.Console({
-            formatter: options => formatter(options, true),
-            timestamp: () => moment().format(AppUtil.DATE_FORMAT)
-        }),
-        new winston.transports.File({
-            name: "log",
-            filename: `${filename}.log`,
-            json: false,
-            maxsize: 5242880, // 5Mb
-            maxFiles: 5,
-            formatter: options => formatter(options),
-            timestamp: () => moment().format(AppUtil.DATE_FORMAT)
-        }),
-        new winston.transports.File({
-            name: "json",
-            filename: `${filename}.json`,
-            json: true,
-            maxsize: 5242880, // 5Mb
-            maxFiles: 5,
-            timestamp: () => moment().format(AppUtil.DATE_FORMAT)
-        })
-    ]
+    transports: transports
 });
 
 /**

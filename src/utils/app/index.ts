@@ -1,8 +1,9 @@
-import { readdirSync, statSync } from "fs";
+import { statSync } from "fs";
 import * as moment from "moment";
 import * as path from "path";
 
 import { logger } from "../../services";
+import { FsUtil } from "..";
 
 
 /** Date format used for logging. */
@@ -23,9 +24,10 @@ export const CONFIG_DIR = process.env.NODE_CONFIG_DIR
  * Logs useful information on the application such as configuration directory and some basic metrics.
  *
  * @export
+ * @returns {Promise<void>}
  */
-export function printAppInformation(): void {
-    const files = ls(CONFIG_DIR);
+export async function printAppInformation(): Promise<void> {
+    const files = await FsUtil.ls(CONFIG_DIR);
     const folders = files
         // Get directories from file paths
         .map(file => file.substring(0, file.lastIndexOf(path.sep)))
@@ -41,30 +43,6 @@ export function printAppInformation(): void {
     };
 
     logger.info(`Config ${JSON.stringify(metrics, undefined, 2)}`);
-}
-
-/**
- * Recursively looks for files in a given directory in a synchronous way.
- *
- * @export
- * @param {string} directory the directory to look in for files
- * @param {Array<string>} [content] the content to keep beetween recursive calls
- * @returns {Array<string>} the list of files
- */
-export function ls(directory: string, content?: Array<string>): Array<string> {
-    let list = content || [];
-
-    for (const node of readdirSync(directory)) {
-        const nodePath = `${directory}${path.sep}${node}`;
-        const stats = statSync(nodePath);
-
-        stats.isDirectory()
-            // Recursive call if node is a directory
-            ? list = ls(nodePath, list)
-            : list.push(nodePath);
-    }
-
-    return list;
 }
 
 /**

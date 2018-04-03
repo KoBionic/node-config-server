@@ -4,7 +4,8 @@ import * as express from "express";
 import * as helmet from "helmet";
 import * as http from "http";
 
-import { ClientRouter, ConfigReaderRouter, EurekaClientRouter } from "./routers";
+import { ClientResponseHandler, ErrorHandler } from "./handlers";
+import { ClientRouter, ConfigReaderRouter, EurekaClientRouter, MetricsRouter } from "./routers";
 import { Eureka, logger } from "./services";
 import { AppUtil, ServerUtil } from "./utils";
 
@@ -32,6 +33,7 @@ export class NodeConfigServer {
 
         this.addMiddlewares();
         this.registerRoutes();
+        this.attachHandlers();
 
         // Start Eureka client only if EUREKA_CLIENT is set to true
         if (process.env.EUREKA_CLIENT === "true") {
@@ -42,17 +44,17 @@ export class NodeConfigServer {
 
 
     /**
-     * Creates and starts servers as workers, the number depending on the OS core threads.
+     * Creates and starts a server.
      *
-     * @private
+     * @returns {Promise<void>}
      * @memberof NodeConfigServer
      */
-    public start(): void {
+    public async start(): Promise<void> {
         if (!AppUtil.canContinue()) {
             logger.error("Configuration folder is not valid");
             process.exit(1);
         }
-        AppUtil.printAppInformation();
+        await AppUtil.printAppInformation();
 
         const server = http.createServer(this.app);
         server.listen(ServerUtil.PORT);
@@ -84,7 +86,19 @@ export class NodeConfigServer {
     private registerRoutes(): void {
         this.app.use("/", EurekaClientRouter);
         this.app.use(ServerUtil.UI_CLIENT_URL, ClientRouter);
+        this.app.use(`${ServerUtil.UI_CLIENT_URL}/metrics`, MetricsRouter);
         this.app.use(`${ServerUtil.API_URL}/*`, ConfigReaderRouter);
+    }
+
+    /**
+     * Attaches custom middelwares to the application routes.
+     *
+     * @private
+     * @memberof NodeConfigServer
+     */
+    private attachHandlers(): void {
+        this.app.use("/*", ClientResponseHandler);
+        this.app.use("/*", ErrorHandler);
     }
 
     /**
