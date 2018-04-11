@@ -60,8 +60,13 @@ class MetricsRouter extends GenericRouter {
 
         const extensionsSize = Object.keys(extensions).length;
         res.status(200);
-        res["message"] = `${extensionsSize} type${extensionsSize > 1 ? "s" : ""} of extension found`;
-        res["body"] = extensions;
+        res.locals.message = `${extensionsSize} type${extensionsSize > 1 ? "s" : ""} of extension found`;
+        const body = {
+            files: files.length,
+            size: extensionsSize,
+            extensions: extensions
+        };
+        res.locals.body = body;
         next();
     }
 

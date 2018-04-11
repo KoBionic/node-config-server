@@ -2,8 +2,8 @@ import { statSync } from "fs";
 import * as moment from "moment";
 import * as path from "path";
 
-import { logger } from "../../services";
 import { FsUtil } from "..";
+import { logger } from "../../services";
 
 
 /** Date format used for logging. */

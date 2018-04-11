@@ -2,8 +2,7 @@ import * as fs from "fs";
 import { promisify } from "util";
 
 import { logger } from "..";
-import { TreeNode } from "../../models/tree-node.model";
-import { Tree } from "../../models/tree.model";
+import { Tree, TreeNode } from "../../models/tree.types";
 import { AppUtil, ServerUtil } from "../../utils";
 
 const readdir = promisify(fs.readdir);

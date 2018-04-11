@@ -54,7 +54,7 @@ class ClientRouter extends GenericRouter {
         try {
             const tree = await this.contentService.getTree();
             res.status(200);
-            res["body"] = tree;
+            res.locals.body = tree;
             next();
 
         } catch (err) {

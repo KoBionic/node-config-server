@@ -8,15 +8,11 @@ describe("App Util Test Suite", () => {
         expect(AppUtil.canContinue()).toBeTruthy();
     });
 
-    it("should use logger to print application information", () => {
+    it("should use logger to print application information", async () => {
         logger.info = jest.fn();
-        AppUtil.printAppInformation();
+        await AppUtil.printAppInformation();
 
         expect(logger.info).toHaveBeenCalled();
-    });
-
-    it("should list the directory and return the correct number of files", () => {
-        expect(AppUtil.ls(__dirname).length).toBe(2);
     });
 
 });
