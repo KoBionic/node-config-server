@@ -17,13 +17,15 @@ const paths = {
 
 
 const configuration: webpack.Configuration = {
+    context: root,
     entry: paths.entry,
-    devtool: process.env.NODE_ENV === "production" ? "source-map" : "inline-source-map",
+    mode: process.env.NODE_ENV === "production" ? "production" : "development",
+    target: tsconfig.compilerOptions.moduleResolution,
+    devtool: process.env.NODE_ENV === "production" ? undefined : "inline-source-map",
     node: {
         __filename: false,
         __dirname: false
     },
-    target: tsconfig.compilerOptions.moduleResolution,
     externals: [
         /^[a-z\-0-9]+$/,
         "socket.io",
