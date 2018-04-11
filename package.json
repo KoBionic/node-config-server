@@ -35,6 +35,7 @@
   "scripts": {
     "build": "webpack --progress",
     "build:prod": "NODE_ENV=production webpack --progress",
+    "prepublishOnly": "npm run build:prod",
     "start": "node dist/server.js",
     "start:w": "webpack --progress --watch",
     "test": "NODE_ENV=test LOG_WEBSOCKET=false LOG_DIR=logs LOG_LEVEL=none jest --coverage --verbose --forceExit",
