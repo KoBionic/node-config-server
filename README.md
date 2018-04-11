@@ -61,29 +61,26 @@ Configuration of the application is done using environment variables. You can fi
 
 Configuring the application with Docker Compose only requires adding an **environment** array to your *docker-compose.yml* file.
 
-As an example, if you would like to set the maximum number of *forks* to create when instantiating the server to 2 and add a *correlation ID* to the logger, you need to add this to your *docker-compose.yml* file:
+As an example, if you would like to add a *correlation ID* to the logger, you need to add this to your *docker-compose.yml* file:
 
 ```yaml
 environment:
-  CPUS_NUMBER: 2
   LOG_PRINT_ID: 'true'
 ```
 
 ### Configure by setting OS environment variables
 
-Let's use the example above again and set *CPUS_NUMBER* to *2* and *LOG_PRINT_ID* to *true* using environment variables, both on Linux & Windows.
+Let's use the example above again and set *LOG_PRINT_ID* to *true* using environment variables, both on Linux & Windows.
 
 #### On Linux
 
 ```bash
-export CPUS_NUMBER=2
 export LOG_PRINT_ID=true
 ```
 
 #### On Windows
 
 ```cmd
-set CPUS_NUMBER=2
 set LOG_PRINT_ID=true
 ```
 
@@ -94,11 +91,12 @@ Numerous environment variables can be set to configure the application.
 |       Variable       | Type    | Default            | Description                                                              |
 | -------------------- | ------- | ------------------ | ------------------------------------------------------------------------ |
 | `PORT`               | number  | 20490              | the *port* the server will listen on                                     |
-| `CPUS_NUMBER`        | number  | OS core number     | number of servers to instantiate using the *Node.js cluster API*         |
 | `LOG_DIR`            | string  | ./logs             | log file *directory*                                                     |
 | `LOG_LEVEL`          | string  | info               | set the logging *level* ( debug \| error \| info \| none )               |
 | `LOG_NAME`           | string  | node-config-server | log file *name*                                                          |
 | `LOG_PRINT_ID`       | boolean | false              | if set to *true*, will add a **correlation ID** to the logging output    |
+| `LOG_SERVER_PORT`    | number  | 20489              | the WebSocket logging server to connect to for realtime logging          |
+| `LOG_WEBSOCKET`      | boolean | true               | if set to *true*, will add a **WebSocket transport** to the logger       |
 | `NODE_CONFIG_DIR`    | string  | ./config           | *base directory* where *served files* will be looked for                 |
 | `EUREKA_CLIENT`      | boolean | false              | the server will try to register to an **Eureka server** if set to *true* |
 | `EUREKA_SERVER_HOST` | string  | localhost          | configures the Eureka server *hostname*                                  |
