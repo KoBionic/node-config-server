@@ -12,7 +12,6 @@ services:
       - './config:/app/config:ro'
     environment:
       PORT: 20490
-      CPUS_NUMBER: 4
       LOG_DIR: './logs'
       LOG_LEVEL: 'info'
       LOG_NAME: 'node-config-server'
