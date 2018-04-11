@@ -3,6 +3,7 @@ import * as os from "os";
 
 import { logger } from "..";
 import { ServiceStatus } from "../../models/service-status.enum";
+import { AppUtil } from "../../utils";
 
 
 /**
@@ -48,8 +49,8 @@ export class EurekaClientService {
      */
     constructor() {
         this.status = ServiceStatus.DOWN;
-        this.description = "Configuration server aimed at serving versioned configuration for micro-services.";
-        this.appID = "node-config-server";
+        this.description = AppUtil.getAppDescription();
+        this.appID = AppUtil.getAppName();
         this.vipAddress = this.appID;
         this.eurekaServerHost = process.env.EUREKA_SERVER_HOST || os.hostname().toLowerCase();
         this.eurekaServerPort = process.env.EUREKA_SERVER_PORT || 8761;

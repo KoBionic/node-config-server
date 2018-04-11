@@ -1,4 +1,4 @@
-import { statSync } from "fs";
+import { readFileSync, statSync } from "fs";
 import * as moment from "moment";
 import * as path from "path";
 
@@ -73,4 +73,34 @@ export function canContinue(): boolean {
  */
 export function timestamp(): string {
     return moment(Date.now()).format(DATE_FORMAT);
+}
+
+/**
+ * Retrieves the application name from the package.json. Scope is removed by default.
+ *
+ * @export
+ * @param {boolean} [scoped=false] set to true if scope needs to be left in the resulting string
+ * @returns {string} the application name
+ */
+export function getAppName(scoped: boolean = false): string {
+    const scopeRegExp = /^@.+\//;
+
+    const json = readFileSync(path.resolve(__dirname, "..", "package.json"), "utf8");
+    let name: string = JSON.parse(json).name;
+
+    if (!scoped) name = name.replace(scopeRegExp, "");
+
+    return name;
+}
+
+/**
+ * Retrieves the application description from the package.json.
+ *
+ * @export
+ * @returns {string} the application description
+ */
+export function getAppDescription(): string {
+    const json = readFileSync(path.resolve(__dirname, "..", "package.json"), "utf8");
+
+    return JSON.parse(json).description;
 }
