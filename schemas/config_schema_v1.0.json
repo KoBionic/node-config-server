@@ -4,7 +4,7 @@
   "additionalProperties": false,
   "definitions": {
     "$schema": {
-      "default": "https://github.com/KoBionic/node-config-server/master/schemas/config_schema_v1.0.json",
+      "default": "https://raw.githubusercontent.com/KoBionic/node-config-server/master/schemas/config_schema_v1.0.json",
       "description": "JSON schema used to validate configuration.",
       "type": "string"
     },
