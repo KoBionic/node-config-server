@@ -7,6 +7,16 @@
       "dat",
       "mkv",
       "mp4"
-    ]
+    ],
+    "configuration": {
+      "downloadFolder": "~/Downloads",
+      "maxDownloads": 22,
+      "extensions": [
+        "avi",
+        "dat",
+        "mkv",
+        "mp4"
+      ]
+    }
   }
 }

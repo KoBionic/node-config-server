@@ -1,7 +1,7 @@
-import { OptionsV2, parseString, processors } from "xml2js";
+import { logger } from '@kobionic/server-lib';
+import { OptionsV2, parseString, processors } from 'xml2js';
 
-import { logger } from "../../services";
-import { GenericParser } from "../generic.parser";
+import { GenericParser } from '../generic.parser';
 
 
 /**
@@ -28,7 +28,7 @@ export class XMLParser extends GenericParser {
                 valueProcessors: [
                     processors.parseNumbers,
                     processors.parseBooleans,
-                ]
+                ],
             };
 
             parseString(str, options, (err, content) => {

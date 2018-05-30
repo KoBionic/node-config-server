@@ -1,9 +1,9 @@
-import { stat } from "fs";
-import * as path from "path";
-import { promisify } from "util";
+import { logger } from '@kobionic/server-lib';
+import { stat } from 'fs';
+import * as path from 'path';
+import { promisify } from 'util';
 
-import { logger } from "../services";
-import { AppUtil } from "../utils";
+import { AppUtil } from '../utils';
 
 const statAsync = promisify(stat);
 
@@ -23,7 +23,7 @@ export class ConfigRequest {
     public filename: string;
 
     /** The configuration fields to look for in the file. */
-    public configFields: Array<string>;
+    public configFields: string[];
 
     /** The URL parts parsing RegExp. */
     private readonly urlPartsRegExp: RegExp = /([^\/]+)/g;
@@ -66,13 +66,13 @@ export class ConfigRequest {
      */
     private async setFields(): Promise<void> {
         const parsedUrl = this.url.match(this.urlPartsRegExp);
-        logger.debug("Parsed URL:", parsedUrl.join("/"));
+        logger.debug('Parsed URL:', parsedUrl.join('/'));
 
         let pathToFolder = path.resolve(AppUtil.CONFIG_DIR);
 
         while (parsedUrl.length) {
             pathToFolder = path.join(pathToFolder, parsedUrl.shift());
-            logger.debug("Part:", pathToFolder);
+            logger.debug('Part:', pathToFolder);
 
             // Check if folder is a directory
             const isFolder = (await statAsync(pathToFolder)).isDirectory();
@@ -82,18 +82,18 @@ export class ConfigRequest {
 
             } else {
                 // Set folder path & filename if sequence ends with a file and get out of loop
-                const parts = pathToFolder.split("/");
+                const parts = pathToFolder.split('/');
                 this.filename = parts.pop();
-                this.folderPath = parts.join("/");
+                this.folderPath = parts.join('/');
                 break;
             }
         }
 
         this.configFields = parsedUrl;
 
-        logger.debug("Folder path:", this.folderPath);
-        logger.debug("Filename:", this.filename);
-        logger.debug("Config fields:", this.configFields.join("/"));
+        logger.debug('Folder path:', this.folderPath);
+        logger.debug('Filename:', this.filename);
+        logger.debug('Config fields:', this.configFields.join('/'));
     }
 
 }

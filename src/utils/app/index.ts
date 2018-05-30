@@ -1,16 +1,9 @@
-import { readFileSync, statSync } from "fs";
-import * as moment from "moment";
-import * as path from "path";
+import { AppInfoUtil, logger } from '@kobionic/server-lib';
+import { statSync } from 'fs';
+import * as path from 'path';
 
-import { FsUtil } from "..";
-import { logger } from "../../services";
+import { FsUtil } from '..';
 
-
-/** Date format used for logging. */
-export const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss.SSS";
-
-/** Morgan HTTP Logger format. */
-export const HTTP_FORMAT = ":method :url :status :response-time ms :remote-addr - :user-agent";
 
 /**
  * The application configuration directory, retrieved either by setting the *NODE_CONFIG_DIR*
@@ -18,7 +11,7 @@ export const HTTP_FORMAT = ":method :url :status :response-time ms :remote-addr 
  */
 export const CONFIG_DIR = process.env.NODE_CONFIG_DIR
     ? path.resolve(process.env.NODE_CONFIG_DIR)
-    : path.resolve("config");
+    : path.resolve(AppInfoUtil.ROOT_PATH, 'config');
 
 /**
  * Logs useful information on the application such as configuration directory and some basic metrics.
@@ -63,44 +56,4 @@ export function canContinue(): boolean {
     }
 
     return go;
-}
-
-/**
- * Returns a formatted timestamp.
- *
- * @export
- * @returns {string} the formatted timestamp as a string
- */
-export function timestamp(): string {
-    return moment(Date.now()).format(DATE_FORMAT);
-}
-
-/**
- * Retrieves the application name from the package.json. Scope is removed by default.
- *
- * @export
- * @param {boolean} [scoped=false] set to true if scope needs to be left in the resulting string
- * @returns {string} the application name
- */
-export function getAppName(scoped: boolean = false): string {
-    const scopeRegExp = /^@.+\//;
-
-    const json = readFileSync(path.resolve(__dirname, "..", "package.json"), "utf8");
-    let name: string = JSON.parse(json).name;
-
-    if (!scoped) name = name.replace(scopeRegExp, "");
-
-    return name;
-}
-
-/**
- * Retrieves the application description from the package.json.
- *
- * @export
- * @returns {string} the application description
- */
-export function getAppDescription(): string {
-    const json = readFileSync(path.resolve(__dirname, "..", "package.json"), "utf8");
-
-    return JSON.parse(json).description;
 }

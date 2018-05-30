@@ -1,5 +1,5 @@
-import { WSTransport } from "./ws";
+import { WSTransport } from './ws';
 
 export {
-    WSTransport
+    WSTransport,
 };

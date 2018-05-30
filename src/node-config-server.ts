@@ -1,13 +1,14 @@
-import * as bodyParser from "body-parser";
-import * as cors from "cors";
-import * as express from "express";
-import * as helmet from "helmet";
-import * as http from "http";
+import { EurekaClientRouter, EurekaClientService, logger } from '@kobionic/server-lib';
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
+import * as express from 'express';
+import * as helmet from 'helmet';
+import * as http from 'http';
 
-import { ClientResponseHandler, ErrorHandler } from "./handlers";
-import { ClientRouter, ConfigReaderRouter, EurekaClientRouter, MetricsRouter } from "./routers";
-import { Eureka, logger } from "./services";
-import { AppUtil, ServerUtil } from "./utils";
+import { ErrorHandler } from './handlers';
+import { ConfigReaderRouter } from './routers';
+import { WSTransport } from './services';
+import { AppUtil, ServerUtil } from './utils';
 
 
 /**
@@ -17,6 +18,9 @@ import { AppUtil, ServerUtil } from "./utils";
  * @class NodeConfigServer
  */
 export class NodeConfigServer {
+
+    /** The HTTP server. */
+    public static server: http.Server;
 
     /** The Express Application instance. */
     public app: express.Application;
@@ -29,16 +33,22 @@ export class NodeConfigServer {
      */
     constructor() {
         this.app = express();
-        this.app.set("port", ServerUtil.PORT);
+        this.app.set('port', ServerUtil.PORT);
 
         this.addMiddlewares();
         this.registerRoutes();
-        this.attachHandlers();
+        this.app.use('/*', ErrorHandler);
+
+        NodeConfigServer.server = http.createServer(this.app);
+
+        // Add a WebSocket transport unless specified otherwise
+        if (process.env.LOG_WEBSOCKET !== 'false') logger.addTransport(<any>WSTransport);
 
         // Start Eureka client only if EUREKA_CLIENT is set to true
-        if (process.env.EUREKA_CLIENT === "true") {
-            Eureka.init(ServerUtil.HOST, ServerUtil.PORT);
-            Eureka.start();
+        if (process.env.EUREKA_CLIENT === 'true') {
+            const eureka = EurekaClientService.Instance;
+            eureka.init(ServerUtil.HOST, ServerUtil.PORT);
+            eureka.start();
         }
     }
 
@@ -46,20 +56,20 @@ export class NodeConfigServer {
     /**
      * Creates and starts a server.
      *
-     * @returns {Promise<void>}
+     * @returns {void}
      * @memberof NodeConfigServer
      */
-    public async start(): Promise<void> {
+    public start(): void {
         if (!AppUtil.canContinue()) {
-            logger.error("Configuration folder is not valid");
+            logger.error('Configuration folder is not valid');
             process.exit(1);
         }
-        await AppUtil.printAppInformation();
+        AppUtil.printAppInformation()
+            .catch(err => logger.error(`an error occured: ${err.message}`));
 
-        const server = http.createServer(this.app);
-        server.listen(ServerUtil.PORT);
-        server.on("error", this.onError.bind(this));
-        server.on("listening", this.onListening.bind(this, ServerUtil.PORT));
+        NodeConfigServer.server.listen(ServerUtil.PORT);
+        NodeConfigServer.server.on('error', this.onError.bind(this));
+        NodeConfigServer.server.on('listening', this.onListening.bind(this, ServerUtil.PORT));
     }
 
     /**
@@ -69,12 +79,13 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     private addMiddlewares(): void {
-        if (process.env.CORS !== "false") this.app.use(cors());
-        if (process.env.SECURITY !== "false") this.app.use(helmet());
-        this.app.use(logger.getErrorHTTPLogger());
-        this.app.use(logger.getInfoHTTPLogger());
-        this.app.use(bodyParser.json({ limit: "10mb" }));
-        this.app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
+        if (process.env.CORS !== 'false') this.app.use(cors());
+        if (process.env.SECURITY !== 'false') this.app.use(helmet());
+        this.app.use(logger.errorHTTPLogger());
+        this.app.use(logger.infoHTTPLogger());
+        this.app.use(bodyParser.json({ limit: '10mb' }));
+        this.app.use(bodyParser.text({ limit: '10mb' }));
+        this.app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));
     }
 
     /**
@@ -84,21 +95,12 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     private registerRoutes(): void {
-        this.app.use("/", EurekaClientRouter);
-        this.app.use(ServerUtil.UI_CLIENT_URL, ClientRouter);
-        this.app.use(`${ServerUtil.UI_CLIENT_URL}/metrics`, MetricsRouter);
+        this.app.use('/eureka', EurekaClientRouter);
         this.app.use(`${ServerUtil.API_URL}/*`, ConfigReaderRouter);
-    }
-
-    /**
-     * Attaches custom middelwares to the application routes.
-     *
-     * @private
-     * @memberof NodeConfigServer
-     */
-    private attachHandlers(): void {
-        this.app.use("/*", ClientResponseHandler);
-        this.app.use("/*", ErrorHandler);
+        this.app.use('/*', (req, res, next) => {
+            res.status(404);
+            next(new Error(`Requested resource ${req.originalUrl} not found`));
+        });
     }
 
     /**
@@ -110,12 +112,12 @@ export class NodeConfigServer {
      */
     private onError(error: NodeJS.ErrnoException): void {
         switch (error.code) {
-            case "EACCES":
+            case 'EACCES':
                 logger.error(`Port ${ServerUtil.PORT} requires elevated privileges`);
                 process.exit(1);
                 break;
 
-            case "EADDRINUSE":
+            case 'EADDRINUSE':
                 logger.error(`Port ${ServerUtil.PORT} is already in use`);
                 process.exit(1);
                 break;

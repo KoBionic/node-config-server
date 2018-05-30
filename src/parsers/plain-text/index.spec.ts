@@ -1,12 +1,12 @@
-import { readFileSync } from "fs";
+import { readFileSync } from 'fs';
 
-import { PlainTextParser } from ".";
+import { PlainTextParser } from '.';
 
 
-describe("Plain Text Parser Test Suite", () => {
+describe('Plain Text Parser Test Suite', () => {
 
     const plainTextParser = new PlainTextParser();
-    const stringContent = readFileSync(`${__dirname}/test.md`, "utf8");
+    const stringContent = readFileSync(`${__dirname}/test.md`, 'utf8');
     const expectedString = `# Library
 
 ## The Prestige
@@ -50,7 +50,7 @@ Duration: 107 min
 Watched: true
 `;
 
-    it("should return the same string as sent", async () => {
+    it('should return the same string as sent', async () => {
         const obj = await plainTextParser.parse(stringContent);
         expect(obj).toEqual(expectedString);
     });

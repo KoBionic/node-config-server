@@ -1,4 +1,4 @@
-import { GenericParser } from "../generic.parser";
+import { GenericParser } from '../generic.parser';
 
 
 /**

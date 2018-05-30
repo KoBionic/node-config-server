@@ -1,11 +1,7 @@
-import { ContentService } from "./content";
-import { Eureka } from "./eureka-client";
-import { FileReaderService } from "./file-reader";
-import * as logger from "./logger";
+import { FileReaderService } from './file-reader';
+import { WSTransport } from './logger/transports';
 
 export {
-    ContentService,
-    Eureka,
     FileReaderService,
-    logger
+    WSTransport,
 };

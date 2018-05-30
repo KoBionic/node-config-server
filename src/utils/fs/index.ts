@@ -1,6 +1,6 @@
-import * as fs from "fs";
-import * as path from "path";
-import { promisify } from "util";
+import * as fs from 'fs';
+import * as path from 'path';
+import { promisify } from 'util';
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
@@ -11,10 +11,10 @@ const stat = promisify(fs.stat);
  *
  * @export
  * @param {string} directory the directory to look in for files
- * @param {Array<string>} [content] the content to keep beetween recursive calls
- * @returns {Promise<Array<string>>} the list of files
+ * @param {string[]} [content] the content to keep beetween recursive calls
+ * @returns {Promise<string[]>} the list of files
  */
-export async function ls(directory: string, content?: Array<string>): Promise<Array<string>> {
+export async function ls(directory: string, content?: string[]): Promise<string[]> {
     let list = content || [];
 
     for (const node of await readdir(directory)) {

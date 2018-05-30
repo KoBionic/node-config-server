@@ -5,5 +5,5 @@
  * @enum {string}
  */
 export enum Format {
-    STRING = "string"
+    STRING = 'string',
 }

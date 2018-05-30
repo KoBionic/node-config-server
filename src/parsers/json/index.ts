@@ -1,5 +1,6 @@
-import { logger } from "../../services";
-import { GenericParser } from "../generic.parser";
+import { logger } from '@kobionic/server-lib';
+
+import { GenericParser } from '../generic.parser';
 
 
 /**

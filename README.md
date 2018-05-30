@@ -95,7 +95,6 @@ Numerous environment variables can be set to configure the application.
 | `LOG_LEVEL`          | string  | info               | set the logging *level* ( debug \| error \| info \| none )               |
 | `LOG_NAME`           | string  | node-config-server | log file *name*                                                          |
 | `LOG_PRINT_ID`       | boolean | false              | if set to *true*, will add a **correlation ID** to the logging output    |
-| `LOG_SERVER_PORT`    | number  | 20489              | the WebSocket logging server to connect to for realtime logging          |
 | `LOG_WEBSOCKET`      | boolean | true               | if set to *true*, will add a **WebSocket transport** to the logger       |
 | `NODE_CONFIG_DIR`    | string  | ./config           | *base directory* where *served files* will be looked for                 |
 | `EUREKA_CLIENT`      | boolean | false              | the server will try to register to an **Eureka server** if set to *true* |

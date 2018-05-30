@@ -1,8 +1,8 @@
-import * as os from "os";
+import * as os from 'os';
 
 
 /** The UI client & API version tag. */
-const VERSION: string = "v1";
+const VERSION: string = 'v1';
 
 /** The API URL. */
 export const API_URL: string = `/api/${VERSION}`;
@@ -15,6 +15,3 @@ export const HOST: string = os.hostname().toLowerCase();
 
 /** The server port number. */
 export const PORT: string | number = process.env.PORT || 20490;
-
-/** The server logging port number. */
-export const LOG_SERVER_PORT: string | number = process.env.LOG_SERVER_PORT || 20489;

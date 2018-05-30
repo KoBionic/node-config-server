@@ -1,7 +1,7 @@
-import { parse } from "ini";
+import { logger } from '@kobionic/server-lib';
+import { parse } from 'ini';
 
-import { logger } from "../../services";
-import { GenericParser } from "../generic.parser";
+import { GenericParser } from '../generic.parser';
 
 
 /**

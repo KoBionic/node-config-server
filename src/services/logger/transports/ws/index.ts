@@ -1,8 +1,9 @@
-import * as moment from "moment";
-import * as io from "socket.io";
-import { Transport, TransportOptions } from "winston";
+import * as moment from 'moment';
+import * as io from 'socket.io';
+import * as stripAnsi from 'strip-ansi';
+import { Transport, TransportOptions } from 'winston';
 
-import { AppUtil, ServerUtil } from "../../../../utils";
+import { NodeConfigServer } from '../../../../node-config-server';
 
 
 /**
@@ -14,8 +15,13 @@ import { AppUtil, ServerUtil } from "../../../../utils";
  */
 export class WSTransport extends Transport {
 
+    /** The logging level. */
     public readonly level: string;
+
+    /** The logger name. */
     public readonly name: string;
+
+    /** The logger silent switch. */
     public readonly silent: boolean;
 
     private ioServer: io.Server;
@@ -30,11 +36,10 @@ export class WSTransport extends Transport {
     constructor(options: TransportOptions = {}) {
         super();
         this.level = options.level;
-        this.name = options.name || "WSTransport";
+        this.name = options.name || 'WSTransport';
         this.silent = options.silent || false;
 
-        this.ioServer = io();
-        this.ioServer.listen(ServerUtil.LOG_SERVER_PORT);
+        this.ioServer = io(NodeConfigServer.server);
     }
 
 
@@ -53,12 +58,12 @@ export class WSTransport extends Transport {
         }
         const toLog = {
             level: level.toUpperCase(),
-            msg: msg,
-            timestamp: moment().format(AppUtil.DATE_FORMAT),
+            msg: stripAnsi(msg),
+            timestamp: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
             meta: meta,
         };
 
-        this.ioServer.emit("serverLog", JSON.stringify(toLog));
+        this.ioServer.emit('serverLog', JSON.stringify(toLog));
         callback();
     }
 

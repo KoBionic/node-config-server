@@ -4,6 +4,8 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "dist",
+    "declaration": true,
+    "sourceMap": true,
     "noUnusedLocals": true
   },
   "include": [

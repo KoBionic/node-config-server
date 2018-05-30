@@ -1,26 +1,26 @@
-import { readFileSync } from "fs";
+import { readFileSync } from 'fs';
 
-import { INIParser } from ".";
+import { INIParser } from '.';
 
 
-describe("JSON Parser Test Suite", () => {
+describe('JSON Parser Test Suite', () => {
 
     const iniParser = new INIParser();
-    const iniContent = readFileSync(`${__dirname}/test.ini`, "utf8");
+    const iniContent = readFileSync(`${__dirname}/test.ini`, 'utf8');
     const expectedJson = {
         inline: true,
         metadata: {
-            "best-actor": "Leonardo DiCaprio",
-            "best-movie": "Interstellar"
+            'best-actor': 'Leonardo DiCaprio',
+            'best-movie': 'Interstellar',
         },
         movies: {
             Hostiles: true,
-            "The Prestige": true,
-            "Wind River": true
-        }
+            'The Prestige': true,
+            'Wind River': true,
+        },
     };
 
-    it("should parse an INI content as expected", async () => {
+    it('should parse an INI content as expected', async () => {
         const obj = await iniParser.parse(iniContent);
         expect(obj).toEqual(expectedJson);
     });

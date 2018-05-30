@@ -1,10 +1,10 @@
-import { readFile } from "fs";
-import * as path from "path";
-import { promisify } from "util";
+import { logger } from '@kobionic/server-lib';
+import { readFile } from 'fs';
+import * as path from 'path';
+import { promisify } from 'util';
 
-import { logger } from "..";
-import { FileType } from "../../models/file-type.enum";
-import { Format } from "../../models/format.enum";
+import { FileType } from '../../models/file-type.enum';
+import { Format } from '../../models/format.enum';
 import {
     GenericParser,
     INIParser,
@@ -13,7 +13,7 @@ import {
     PropertiesParser,
     XMLParser,
     YAMLParser,
-} from "../../parsers";
+} from '../../parsers';
 
 const readFileAsync = promisify(readFile);
 
@@ -26,6 +26,31 @@ const readFileAsync = promisify(readFile);
  */
 export class FileReaderService {
 
+    /** The service singleton instance. */
+    private static instance: FileReaderService;
+
+
+    /**
+     * Creates an instance of FileReaderService.
+     *
+     * @memberof FileReaderService
+     */
+    private constructor() {
+    }
+
+
+    /**
+     * Returns a singleton instance of the service.
+     *
+     * @readonly
+     * @static
+     * @type {FileReaderService}
+     * @memberof FileReaderService
+     */
+    public static get Instance(): FileReaderService {
+        return this.instance || (this.instance = new FileReaderService());
+    }
+
     /**
      * Asynchronously reads a directory and search for specified file and returns its content.
      *
@@ -37,18 +62,18 @@ export class FileReaderService {
      */
     public async readFile(dir: string, file: string, format?: Format): Promise<any> {
         try {
-            let fileType = file.substring(file.lastIndexOf(".") + 1);
-            logger.debug("File type:", fileType);
+            let fileType = file.substring(file.lastIndexOf('.') + 1);
+            logger.debug('File type:', fileType);
 
             const pathToFile = path.resolve(`${dir}/${file}`);
-            logger.debug("File path:", pathToFile);
+            logger.debug('File path:', pathToFile);
 
             // Read file
-            const data = await readFileAsync(pathToFile, "utf8");
+            const data = await readFileAsync(pathToFile, 'utf8');
 
             // Force use of PlainTextParser if Format.STRING is provided
             if (format === Format.STRING) {
-                logger.debug("Format:", format);
+                logger.debug('Format:', format);
                 fileType = Format.STRING;
             }
 
@@ -79,7 +104,7 @@ export class FileReaderService {
                     break;
 
                 default:
-                    logger.debug("Unknown or forced file type:", fileType);
+                    logger.debug('Unknown or forced file type:', fileType);
                     parser = new PlainTextParser();
             }
 
@@ -89,7 +114,7 @@ export class FileReaderService {
             return obj;
 
         } catch (err) {
-            logger.debug("Error when reading file:", err.message);
+            logger.debug('Error when reading file:', err.message);
             throw err;
         }
     }
