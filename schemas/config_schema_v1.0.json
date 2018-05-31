@@ -14,6 +14,7 @@
       "type": "string"
     },
     "eureka": {
+      "additionalProperties": false,
       "description": "Eureka services registry client configuration.",
       "items": [
         {
