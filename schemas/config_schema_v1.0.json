@@ -22,6 +22,7 @@
           "type": "boolean"
         },
         {
+          "additionalProperties": false,
           "properties": {
             "registry": {
               "additionalProperties": false,
@@ -50,7 +51,7 @@
     },
     "logging": {
       "additionalProperties": false,
-      "description": "logger configuration.",
+      "description": "Logger configuration.",
       "items": [
         {
           "default": true,
