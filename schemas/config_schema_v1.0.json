@@ -64,18 +64,18 @@
               "type": "boolean"
             },
             "directory": {
-              "description": "Logs directory.",
               "default": "./logs",
+              "description": "Logs directory.",
               "type": "string"
             },
             "enableWebsocket": {
-              "description": "Set to true to add WebSocket logging transport.",
               "default": false,
+              "description": "Set to true to add WebSocket logging transport.",
               "type": "boolean"
             },
             "level": {
-              "description": "Logging level.",
               "default": "info",
+              "description": "Logging level.",
               "enum": [
                 "debug",
                 "error",
@@ -85,8 +85,8 @@
               "type": "string"
             },
             "name": {
-              "description": "Log files basename.",
               "default": "node-config-server",
+              "description": "Log files basename.",
               "type": "string"
             }
           },
@@ -97,25 +97,13 @@
       "minItems": 2,
       "type": "array"
     },
-    "server": {
-      "additionalProperties": false,
-      "description": "Node Config Server configuration attributes.",
-      "properties": {
-        "port": {
-          "default": 20490,
-          "description": "Node Config Server port number.",
-          "type": "integer"
-        }
-      },
-      "type": "object"
-    },
     "security": {
       "additionalProperties": false,
       "description": "Node Config Server security configuration attributes.",
       "properties": {
         "enableCors": {
-          "description": "Enforce Cross-Origin Resource Sharing policy.",
           "default": true,
+          "description": "Enforce Cross-Origin Resource Sharing policy.",
           "type": "boolean"
         },
         "httpHeaders": {
@@ -139,22 +127,22 @@
                   "type": "boolean"
                 },
                 "hsts": {
+                  "additionalProperties": false,
                   "default": true,
                   "description": "HTTP Strict-Transport-Security configuration. See https://helmetjs.github.io/docs/hsts",
-                  "type": "object",
-                  "additionalProperties": false,
                   "properties": {
-                    "maxAge": {
-                      "description": "The time in seconds that the browser should remember that a site is only to be accessed using HTTPS.",
-                      "default": 5184000,
-                      "type": "integer"
-                    },
                     "includeSubDomains": {
-                      "description": "If this optional parameter is specified, this rule applies to all of the site's subdomains as well.",
                       "default": false,
+                      "description": "If this optional parameter is specified, this rule applies to all of the site's subdomains as well.",
                       "type": "boolean"
+                    },
+                    "maxAge": {
+                      "default": 5184000,
+                      "description": "The time in seconds that the browser should remember that a site is only to be accessed using HTTPS.",
+                      "type": "integer"
                     }
-                  }
+                  },
+                  "type": "object"
                 },
                 "ieNoOpen": {
                   "default": true,
@@ -175,6 +163,18 @@
             }
           ],
           "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "server": {
+      "additionalProperties": false,
+      "description": "Node Config Server configuration attributes.",
+      "properties": {
+        "port": {
+          "default": 20490,
+          "description": "Node Config Server port number.",
+          "type": "integer"
         }
       },
       "type": "object"
