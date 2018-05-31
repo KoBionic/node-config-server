@@ -1,0 +1,204 @@
+{
+  "$id": "config_schema_v1.0.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "definitions": {
+    "$schema": {
+      "default": "https://raw.githubusercontent.com/KoBionic/node-config-server/master/schemas/config_schema_v1.0.json",
+      "description": "JSON schema used to validate configuration.",
+      "type": "string"
+    },
+    "baseDirectory": {
+      "default": "./config",
+      "description": "Server base directory used for serving configuration files.",
+      "type": "string"
+    },
+    "eureka": {
+      "description": "Eureka services registry client configuration.",
+      "items": [
+        {
+          "default": false,
+          "type": "boolean"
+        },
+        {
+          "properties": {
+            "registry": {
+              "additionalProperties": false,
+              "description": "Service registry configuration.",
+              "properties": {
+                "host": {
+                  "default": "localhost",
+                  "description": "Service registry hostname.",
+                  "type": "string"
+                },
+                "port": {
+                  "default": 8761,
+                  "description": "Service registry port number.",
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      ],
+      "maxItems": 2,
+      "minItems": 2,
+      "type": "array"
+    },
+    "logging": {
+      "additionalProperties": false,
+      "description": "logger configuration.",
+      "items": [
+        {
+          "default": true,
+          "type": "boolean"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "correlationId": {
+              "default": true,
+              "description": "Set to true to add correlation ID to the logging output.",
+              "type": "boolean"
+            },
+            "directory": {
+              "description": "Logs directory.",
+              "default": "./logs",
+              "type": "string"
+            },
+            "enableWebsocket": {
+              "description": "Set to true to add WebSocket logging transport.",
+              "default": false,
+              "type": "boolean"
+            },
+            "level": {
+              "description": "Logging level.",
+              "default": "info",
+              "enum": [
+                "debug",
+                "error",
+                "info",
+                "warn"
+              ],
+              "type": "string"
+            },
+            "name": {
+              "description": "Log files basename.",
+              "default": "node-config-server",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      ],
+      "maxItems": 2,
+      "minItems": 2,
+      "type": "array"
+    },
+    "server": {
+      "additionalProperties": false,
+      "description": "Node Config Server configuration attributes.",
+      "properties": {
+        "port": {
+          "default": 20490,
+          "description": "Node Config Server port number.",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "security": {
+      "additionalProperties": false,
+      "description": "Node Config Server security configuration attributes.",
+      "properties": {
+        "enableCors": {
+          "description": "Enforce Cross-Origin Resource Sharing policy.",
+          "default": true,
+          "type": "boolean"
+        },
+        "httpHeaders": {
+          "description": "HTTP headers configuration. See https://helmetjs.github.io",
+          "items": [
+            {
+              "default": true,
+              "type": "boolean"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "dnsPrefetchControl": {
+                  "default": true,
+                  "description": "Add DNS Prefetch Control header. See https://helmetjs.github.io/docs/dns-prefetch-control",
+                  "type": "boolean"
+                },
+                "hidePoweredBy": {
+                  "default": true,
+                  "description": "Add Powered-By header. See https://helmetjs.github.io/docs/hide-powered-by",
+                  "type": "boolean"
+                },
+                "hsts": {
+                  "default": true,
+                  "description": "HTTP Strict-Transport-Security configuration. See https://helmetjs.github.io/docs/hsts",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxAge": {
+                      "description": "The time in seconds that the browser should remember that a site is only to be accessed using HTTPS.",
+                      "default": 5184000,
+                      "type": "integer"
+                    },
+                    "includeSubDomains": {
+                      "description": "If this optional parameter is specified, this rule applies to all of the site's subdomains as well.",
+                      "default": false,
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "ieNoOpen": {
+                  "default": true,
+                  "description": "Add X-Download-Options header. See https://helmetjs.github.io/docs/ienoopen/",
+                  "type": "boolean"
+                },
+                "noSniff": {
+                  "default": true,
+                  "description": "Set X-Content-Type-Options header to nosniff. See https://helmetjs.github.io/docs/dont-sniff-mimetype",
+                  "type": "boolean"
+                },
+                "xssFilter": {
+                  "default": true,
+                  "description": "Add X-XSS-Protection header. See https://helmetjs.github.io/docs/xss-filter",
+                  "type": "boolean"
+                }
+              }
+            }
+          ],
+          "type": "array"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "properties": {
+    "$schema": {
+      "$ref": "#/definitions/$schema"
+    },
+    "baseDirectory": {
+      "$ref": "#/definitions/baseDirectory"
+    },
+    "eureka": {
+      "$ref": "#/definitions/eureka"
+    },
+    "logging": {
+      "$ref": "#/definitions/logging"
+    },
+    "security": {
+      "$ref": "#/definitions/security"
+    },
+    "server": {
+      "$ref": "#/definitions/server"
+    }
+  },
+  "type": "object"
+}
