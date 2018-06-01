@@ -10,6 +10,7 @@ const paths = {
     dist: path.resolve('dist'),
     license: path.resolve('COPYRIGHT'),
 };
+const shebang = '#!/usr/bin/env node\n';
 
 
 /**
@@ -46,9 +47,14 @@ async function ls(dir, files) {
         const license = (await readFile(paths.license, 'utf8')).trim();
         const files = await ls(paths.dist);
         for (const file of files) {
-            const source = await readFile(file, 'utf8');
+            let source = await readFile(file, 'utf8');
             if (!source.includes(license)) {
+                const hasShebang = source.startsWith(shebang);
                 const target = fs.createWriteStream(`${file}`, { start: 0 });
+                if (hasShebang) {
+                    source = source.replace(shebang, '');
+                    target.write(`${shebang}\n`);
+                };
                 target.write(`/*\n${license}\n*/\n`);
                 target.write(source);
                 target.end();

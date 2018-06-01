@@ -33,8 +33,9 @@
     "node-config-server": "dist/bin/www.js"
   },
   "scripts": {
-    "build": "tsc",
-    "postbuild": "node postbuild.js",
+    "assets": "copyfiles --up 1 src/**/*.json --exclude src/**/test.json dist",
+    "build": "npm run clean && tsc",
+    "postbuild": "npm run assets && node postbuild.js",
     "build:w": "npm run build -- --watch",
     "clean": "rimraf dist",
     "lint": "tslint --project . --format codeFrame",
@@ -93,6 +94,7 @@
     "@types/supertest": "2.0.4",
     "@types/winston": "2.3.9",
     "@types/xml2js": "0.4.2",
+    "copyfiles": "2.0.0",
     "jest": "23.1.0",
     "nodemon": "1.17.5",
     "supertest": "3.1.0",
