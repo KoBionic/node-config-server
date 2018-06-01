@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/KoBionic/node-config-server/master/schemas/config_schema_v1.0.json",
+  "baseDirectory": "./config",
+  "server": {
+    "port": 20490
+  },
+  "eureka": [
+    true,
+    {
+      "registry": {
+        "host": "localhost",
+        "port": 8761
+      }
+    }
+  ],
+  "logging": [
+    true,
+    {
+      "correlationId": true,
+      "directory": "./logs",
+      "enableWebsocket": true,
+      "level": "info",
+      "name": "node-config-server"
+    }
+  ],
+  "security": {
+    "enableCors": true,
+    "httpHeaders": [
+      true,
+      {
+        "dnsPrefetchControl": true,
+        "hidePoweredBy": true,
+        "hsts": {
+          "maxAge": 5184000,
+          "includeSubDomains": false
+        },
+        "ieNoOpen": true,
+        "noSniff": true,
+        "xssFilter": true
+      }
+    ]
+  }
+}

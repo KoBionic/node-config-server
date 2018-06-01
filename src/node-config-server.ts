@@ -6,8 +6,9 @@ import * as helmet from 'helmet';
 import * as http from 'http';
 
 import { ErrorHandler } from './handlers';
+import AppConfig from './models/config.model';
 import { ConfigReaderRouter } from './routers';
-import { WSTransport } from './services';
+import { ConfigService, WSTransport } from './services';
 import { AppUtil, ServerUtil } from './utils';
 
 
@@ -25,16 +26,51 @@ export class NodeConfigServer {
     /** The Express Application instance. */
     public app: express.Application;
 
+    private appConfig: AppConfig;
+    private config: ConfigService;
+
 
     /**
-     * Default constructor.
+     * Creates an instance of NodeConfigServer.
      *
      * @memberof NodeConfigServer
      */
     constructor() {
-        this.app = express();
-        this.app.set('port', ServerUtil.PORT);
+        this.config = ConfigService.Instance;
+    }
 
+
+    /**
+     * Creates and starts a server.
+     *
+     * @returns {Promise<void>}
+     * @memberof NodeConfigServer
+     */
+    public async start(): Promise<void> {
+        await this.init();
+        if (!AppUtil.canContinue(this.appConfig.baseDirectory)) {
+            logger.error('Configuration folder is not valid');
+            process.exit(1);
+        }
+        await AppUtil
+            .printAppInformation()
+            .catch(err => logger.error(`an error occured: ${err.message}`));
+
+        NodeConfigServer.server.listen(this.appConfig.server.port);
+        NodeConfigServer.server.on('error', this.onError.bind(this));
+        NodeConfigServer.server.on('listening', this.onListening.bind(this, this.appConfig.server.port));
+    }
+
+    /**
+     * Initializes server components.
+     *
+     * @private
+     * @returns {Promise<void>}
+     * @memberof NodeConfigServer
+     */
+    private async init(): Promise<void> {
+        this.appConfig = await this.config.get();
+        this.app = express();
         this.addMiddlewares();
         this.registerRoutes();
         this.app.use('/*', ErrorHandler);
@@ -42,34 +78,15 @@ export class NodeConfigServer {
         NodeConfigServer.server = http.createServer(this.app);
 
         // Add a WebSocket transport unless specified otherwise
-        if (process.env.LOG_WEBSOCKET !== 'false') logger.addTransport(<any>WSTransport);
+        if (this.appConfig.logging['1'].enableWebsocket) logger.addTransport(<any>WSTransport);
 
-        // Start Eureka client only if EUREKA_CLIENT is set to true
-        if (process.env.EUREKA_CLIENT === 'true') {
+        // Start Eureka client only if configuration is set to true
+        if (this.appConfig.eureka['0']) {
+            this.app.use('/eureka', EurekaClientRouter);
             const eureka = EurekaClientService.Instance;
-            eureka.init(ServerUtil.HOST, ServerUtil.PORT);
+            eureka.init(this.appConfig.server.host, this.appConfig.server.port);
             eureka.start();
         }
-    }
-
-
-    /**
-     * Creates and starts a server.
-     *
-     * @returns {void}
-     * @memberof NodeConfigServer
-     */
-    public start(): void {
-        if (!AppUtil.canContinue()) {
-            logger.error('Configuration folder is not valid');
-            process.exit(1);
-        }
-        AppUtil.printAppInformation()
-            .catch(err => logger.error(`an error occured: ${err.message}`));
-
-        NodeConfigServer.server.listen(ServerUtil.PORT);
-        NodeConfigServer.server.on('error', this.onError.bind(this));
-        NodeConfigServer.server.on('listening', this.onListening.bind(this, ServerUtil.PORT));
     }
 
     /**
@@ -79,8 +96,8 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     private addMiddlewares(): void {
-        if (process.env.CORS !== 'false') this.app.use(cors());
-        if (process.env.SECURITY !== 'false') this.app.use(helmet());
+        if (this.appConfig.security.enableCors) this.app.use(cors());
+        if (this.appConfig.security.httpHeaders['0']) this.app.use(helmet(this.appConfig.security.httpHeaders['1']));
         this.app.use(logger.errorHTTPLogger());
         this.app.use(logger.infoHTTPLogger());
         this.app.use(bodyParser.json({ limit: '10mb' }));
@@ -95,7 +112,6 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     private registerRoutes(): void {
-        this.app.use('/eureka', EurekaClientRouter);
         this.app.use(`${ServerUtil.API_URL}/*`, ConfigReaderRouter);
         this.app.use('/*', (req, res, next) => {
             res.status(404);
@@ -113,12 +129,12 @@ export class NodeConfigServer {
     private onError(error: NodeJS.ErrnoException): void {
         switch (error.code) {
             case 'EACCES':
-                logger.error(`Port ${ServerUtil.PORT} requires elevated privileges`);
+                logger.error(`Port ${this.appConfig.server.port} requires elevated privileges`);
                 process.exit(1);
                 break;
 
             case 'EADDRINUSE':
-                logger.error(`Port ${ServerUtil.PORT} is already in use`);
+                logger.error(`Port ${this.appConfig.server.port} is already in use`);
                 process.exit(1);
                 break;
 

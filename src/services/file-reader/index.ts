@@ -26,8 +26,7 @@ const readFileAsync = promisify(readFile);
  */
 export class FileReaderService {
 
-    /** The service singleton instance. */
-    private static instance: FileReaderService;
+    private static _instance: FileReaderService;
 
 
     /**
@@ -48,7 +47,7 @@ export class FileReaderService {
      * @memberof FileReaderService
      */
     public static get Instance(): FileReaderService {
-        return this.instance || (this.instance = new FileReaderService());
+        return FileReaderService._instance || (FileReaderService._instance = new FileReaderService());
     }
 
     /**

@@ -3,7 +3,7 @@ import { stat } from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 
-import { AppUtil } from '../utils';
+import { ConfigService } from '../services';
 
 const statAsync = promisify(stat);
 
@@ -25,20 +25,19 @@ export class ConfigRequest {
     /** The configuration fields to look for in the file. */
     public configFields: string[];
 
-    /** The URL parts parsing RegExp. */
     private readonly urlPartsRegExp: RegExp = /([^\/]+)/g;
-
-    /** The URL to parse. */
     private readonly url: string;
+    private config: ConfigService;
 
 
     /**
-     * Private constructor.
+     * Creates an instance of ConfigRequest.
      *
      * @param {string} url the URL to parse
      * @memberof ConfigRequest
      */
     private constructor(url: string) {
+        this.config = ConfigService.Instance;
         this.url = url;
     }
 
@@ -67,8 +66,9 @@ export class ConfigRequest {
     private async setFields(): Promise<void> {
         const parsedUrl = this.url.match(this.urlPartsRegExp);
         logger.debug('Parsed URL:', parsedUrl.join('/'));
+        const appConfig = await this.config.get();
 
-        let pathToFolder = path.resolve(AppUtil.CONFIG_DIR);
+        let pathToFolder = path.resolve(appConfig.baseDirectory);
 
         while (parsedUrl.length) {
             pathToFolder = path.join(pathToFolder, parsedUrl.shift());
@@ -79,7 +79,6 @@ export class ConfigRequest {
             if (isFolder) {
                 // Set folder path if sequence is a folder
                 this.folderPath = pathToFolder;
-
             } else {
                 // Set folder path & filename if sequence ends with a file and get out of loop
                 const parts = pathToFolder.split('/');
@@ -88,9 +87,7 @@ export class ConfigRequest {
                 break;
             }
         }
-
         this.configFields = parsedUrl;
-
         logger.debug('Folder path:', this.folderPath);
         logger.debug('Filename:', this.filename);
         logger.debug('Config fields:', this.configFields.join('/'));

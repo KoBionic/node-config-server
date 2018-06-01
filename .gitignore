@@ -37,3 +37,4 @@ logs/
 node_modules/
 *-lock.json
 *.log
+ncs.config.json
