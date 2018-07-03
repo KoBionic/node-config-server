@@ -9,6 +9,7 @@ services:
       - '20490:20490'
     volumes:
       - './config:/app/config:ro'
+      - './ncs.config.json:/app/ncs.config.json:ro'
     environment:
       CORS: 'true'
       EUREKA_CLIENT: 'false'
@@ -18,7 +19,7 @@ services:
       LOG_LEVEL: 'info'
       LOG_NAME: 'node-config-server'
       LOG_PRINT_ID: 'false'
-      LOG_WEBSOCKET: 'false'
+      LOG_WEBSOCKET: 'true'
       NODE_CONFIG_DIR: './config'
       PORT: 20490
       SECURITY: 'true'

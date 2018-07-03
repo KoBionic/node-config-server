@@ -1,15 +1,14 @@
-import { EurekaClientRouter, EurekaClientService, logger } from '@kobionic/server-lib';
+import { ErrorHandler, EurekaClientRouter, EurekaClientService, httpLogger, logger, WSTransport } from '@kobionic/server-lib';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as http from 'http';
-
-import { ErrorHandler } from './handlers';
-import AppConfig from './models/config.model';
-import { ConfigReaderRouter } from './routers';
-import { ConfigService, WSTransport } from './services';
-import { AppUtil, ServerUtil } from './utils';
+import * as ms from 'ms';
+import { hostname } from 'os';
+import { APIRouter, ClientRouter } from './routers';
+import { ConfigurationService } from './services';
+import { AppUtil } from './utils';
 
 
 /**
@@ -20,14 +19,12 @@ import { AppUtil, ServerUtil } from './utils';
  */
 export class NodeConfigServer {
 
-    /** The HTTP server. */
-    public static server: http.Server;
-
     /** The Express Application instance. */
     public app: express.Application;
 
-    private appConfig: AppConfig;
-    private config: ConfigService;
+    private confService: ConfigurationService;
+    private server: http.Server;
+    private startTime: number;
 
 
     /**
@@ -36,7 +33,8 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     constructor() {
-        this.config = ConfigService.Instance;
+        this.startTime = Date.now();
+        this.confService = ConfigurationService.Instance;
     }
 
 
@@ -48,45 +46,45 @@ export class NodeConfigServer {
      */
     public async start(): Promise<void> {
         await this.init();
-        if (!AppUtil.canContinue(this.appConfig.baseDirectory)) {
-            logger.error('Configuration folder is not valid');
-            process.exit(1);
-        }
-        await AppUtil
-            .printAppInformation()
-            .catch(err => logger.error(`an error occured: ${err.message}`));
-
-        NodeConfigServer.server.listen(this.appConfig.server.port);
-        NodeConfigServer.server.on('error', this.onError.bind(this));
-        NodeConfigServer.server.on('listening', this.onListening.bind(this, this.appConfig.server.port));
+        this.server.listen(this.confService.config.server.port);
+        this.server.on('error', this.onError.bind(this));
+        this.server.on('listening', this.onListening.bind(this, this.confService.config.server.port));
     }
 
     /**
      * Initializes server components.
      *
-     * @private
-     * @returns {Promise<void>}
+     * @returns {Promise<NodeConfigServer>} chainable instance of NodeConfigServer
      * @memberof NodeConfigServer
      */
-    private async init(): Promise<void> {
-        this.appConfig = await this.config.get();
+    public async init(): Promise<NodeConfigServer> {
         this.app = express();
+
+        if (!AppUtil.canContinue(this.confService.config.baseDirectory)) {
+            logger.error('Configuration folder is not valid');
+            process.exit(1);
+        }
+        await AppUtil
+            .printAppInformation()
+            .catch(err => logger.error(`An error occured: ${err.message}`));
+
         this.addMiddlewares();
-        this.registerRoutes();
+        await this.registerRoutes();
         this.app.use('/*', ErrorHandler);
 
-        NodeConfigServer.server = http.createServer(this.app);
+        this.server = http.createServer(this.app);
 
         // Add a WebSocket transport unless specified otherwise
-        if (this.appConfig.logging['1'].enableWebsocket) logger.addTransport(<any>WSTransport);
+        if (this.confService.config.logging[1].enableWebsocket) logger.add(new WSTransport(this.server, 'serverLog'));
 
         // Start Eureka client only if configuration is set to true
-        if (this.appConfig.eureka['0']) {
+        if (this.confService.config.eureka[0]) {
             this.app.use('/eureka', EurekaClientRouter);
             const eureka = EurekaClientService.Instance;
-            eureka.init(this.appConfig.server.host, this.appConfig.server.port);
+            eureka.init(hostname().toLowerCase(), this.confService.config.server.port);
             eureka.start();
         }
+        return this;
     }
 
     /**
@@ -96,10 +94,9 @@ export class NodeConfigServer {
      * @memberof NodeConfigServer
      */
     private addMiddlewares(): void {
-        if (this.appConfig.security.enableCors) this.app.use(cors());
-        if (this.appConfig.security.httpHeaders['0']) this.app.use(helmet(this.appConfig.security.httpHeaders['1']));
-        this.app.use(logger.errorHTTPLogger());
-        this.app.use(logger.infoHTTPLogger());
+        if (this.confService.config.security.enableCors) this.app.use(cors());
+        if (this.confService.config.security.httpHeaders['0']) this.app.use(helmet(this.confService.config.security.httpHeaders['1']));
+        this.app.use(httpLogger());
         this.app.use(bodyParser.json({ limit: '10mb' }));
         this.app.use(bodyParser.text({ limit: '10mb' }));
         this.app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));
@@ -109,10 +106,12 @@ export class NodeConfigServer {
      * Registers all application routes.
      *
      * @private
+     * @returns {Promise<void>}
      * @memberof NodeConfigServer
      */
-    private registerRoutes(): void {
-        this.app.use(`${ServerUtil.API_URL}/*`, ConfigReaderRouter);
+    private async registerRoutes(): Promise<void> {
+        this.app.use(APIRouter);
+        this.app.use(ClientRouter);
         this.app.use('/*', (req, res, next) => {
             res.status(404);
             next(new Error(`Requested resource ${req.originalUrl} not found`));
@@ -129,15 +128,13 @@ export class NodeConfigServer {
     private onError(error: NodeJS.ErrnoException): void {
         switch (error.code) {
             case 'EACCES':
-                logger.error(`Port ${this.appConfig.server.port} requires elevated privileges`);
+                logger.error(`Port ${this.confService.config.server.port} requires elevated privileges`);
                 process.exit(1);
                 break;
-
             case 'EADDRINUSE':
-                logger.error(`Port ${this.appConfig.server.port} is already in use`);
+                logger.error(`Port ${this.confService.config.server.port} is already in use`);
                 process.exit(1);
                 break;
-
             default:
                 throw error;
         }
@@ -152,6 +149,7 @@ export class NodeConfigServer {
      */
     private onListening(port: number): void {
         logger.info(`Server listening on port ${port}`);
+        logger.info(`Server started in ${ms(Date.now() - this.startTime)}`);
     }
 
 }

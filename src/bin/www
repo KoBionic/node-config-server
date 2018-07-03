@@ -1,0 +1,4 @@
+const logger = require('@kobionic/server-lib').logger;
+new (require('../node-config-server').NodeConfigServer)()
+    .start()
+    .catch(err => logger.error(`Server was unable to start: ${err.message}`));

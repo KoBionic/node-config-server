@@ -195,6 +195,11 @@
           "default": 20490,
           "description": "Node Config Server port number.",
           "type": "integer"
+        },
+        "scheme": {
+          "default": "http",
+          "description": "Node Config Server HTTP protocol.",
+          "type": "string"
         }
       },
       "type": [

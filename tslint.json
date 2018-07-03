@@ -64,13 +64,13 @@
         "functions": true,
         "interfaces": true,
         "methods": true,
+        "namespaces": true,
         "properties": {
           "privacies": [
             "public",
             "protected"
           ]
         },
-        "namespaces": true,
         "types": true
       }
     ],
@@ -139,7 +139,7 @@
       true,
       2
     ],
-    "no-console": false,
+    "no-console": true,
     "no-construct": true,
     "no-debugger": true,
     "no-default-export": false,

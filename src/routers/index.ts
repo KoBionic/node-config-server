@@ -1,5 +1,2 @@
-import ConfigReaderRouter from './config-reader';
-
-export {
-    ConfigReaderRouter,
-};
+export * from './api';
+export * from './client';
