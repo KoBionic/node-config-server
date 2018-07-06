@@ -1,14 +1,15 @@
-import { logger } from '@kobionic/server-lib';
 import { NextFunction, Request, Response, Router } from 'express';
 import { readFile as readFileLegacy, writeFile as writeFileLegacy } from 'fs';
 import { promisify } from 'util';
 import { URLParserService } from '../../../services';
+import { ErrorUtil } from '../../../utils';
 const readFile = promisify(readFileLegacy);
 const writeFile = promisify(writeFileLegacy);
 
 
-const ROUTER_URL = '/file';
+const FILE_ROUTER_URL = '/file';
 const router: Router = Router();
+
 const urlParserService = URLParserService.Instance;
 
 /**
@@ -19,24 +20,22 @@ const urlParserService = URLParserService.Instance;
  * @param {NextFunction} next the Express next function
  */
 async function getFileContent(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const baseUrl = urlParserService.stripEndpointUrl(ROUTER_URL, req.url);
+    const baseUrl = urlParserService.stripEndpointUrl(FILE_ROUTER_URL, req.url);
     try {
         const parsedUrl = await urlParserService.parse(baseUrl);
 
-        if (!parsedUrl) {
-            res.status(400);
-            const err = new Error('A filepath must be provided in URL');
-            return next(err);
+        if (!parsedUrl || !parsedUrl.filename) {
+            ErrorUtil.handle('NO_FILENAME_PROVIDED', res, next);
+
+        } else {
+            const content = await readFile(parsedUrl.fullPath, 'utf8');
+            res
+                .contentType(parsedUrl.filename)
+                .status(200)
+                .send(content);
         }
-        const content = await readFile(parsedUrl.fullPath, 'utf8');
-        res
-            .contentType(parsedUrl.filename)
-            .status(200)
-            .send(content);
     } catch (err) {
-        logger.error(`An error occured: ${err.message}`);
-        res.status(err.code === 'ENOENT' ? 404 : err.code === 'FORBIDDEN' ? 403 : 500);
-        next(err);
+        ErrorUtil.handle(err, res, next);
     }
 }
 
@@ -48,32 +47,32 @@ async function getFileContent(req: Request, res: Response, next: NextFunction): 
  * @param {NextFunction} next the Express next function
  */
 async function modifyFileContent(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const baseUrl = urlParserService.stripEndpointUrl(ROUTER_URL, req.url);
+    const baseUrl = urlParserService.stripEndpointUrl(FILE_ROUTER_URL, req.url);
     try {
         const parsedUrl = await urlParserService.parse(baseUrl);
 
-        if (!req.body) {
-            res.status(400);
-            const err = new Error('Request should have a body');
-            return next(err);
-        }
+        if (!req.body || Object.keys(req.body).length === 0) {
+            ErrorUtil.handle('REQUEST_BODY_INVALID', res, next);
 
-        await writeFile(parsedUrl.fullPath, req.body);
-        res
-            .status(200)
-            .end();
+        } else if (!parsedUrl || !parsedUrl.filename) {
+            ErrorUtil.handle('NO_FILENAME_PROVIDED', res, next);
+
+        } else {
+            await writeFile(parsedUrl.fullPath, req.body.toString(), 'utf8');
+            res
+                .status(200)
+                .end();
+        }
     } catch (err) {
-        logger.error(`An error occured: ${err.message}`);
-        res.status(err.code === 'ENOENT' ? 404 : err.code === 'FORBIDDEN' ? 403 : 500);
-        next(err);
+        ErrorUtil.handle(err, res, next);
     }
 }
 
 router
-    .get(`${ROUTER_URL}/*`, getFileContent)
-    .put(`${ROUTER_URL}/*`, modifyFileContent);
+    .get(`${FILE_ROUTER_URL}*`, getFileContent)
+    .put(`${FILE_ROUTER_URL}*`, modifyFileContent);
 
 export {
+    FILE_ROUTER_URL,
     router,
 };
-

@@ -1,0 +1,14 @@
+{
+  "batters": {
+    "batter": [
+      {
+        "id": "1001",
+        "type": "Regular"
+      },
+      {
+        "id": "1003",
+        "type": "Blueberry"
+      }
+    ]
+  }
+}

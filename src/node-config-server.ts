@@ -8,7 +8,7 @@ import * as ms from 'ms';
 import { hostname } from 'os';
 import { APIRouter, ClientRouter } from './routers';
 import { ConfigurationService } from './services';
-import { AppUtil } from './utils';
+import { AppUtil, ErrorUtil } from './utils';
 
 
 /**
@@ -59,6 +59,8 @@ export class NodeConfigServer {
      */
     public async init(): Promise<NodeConfigServer> {
         this.app = express();
+        // FIXME: there should be a method setLevel in @kobionic/server-lib/logger instead of doing it like this here
+        if (this.confService.config.logging[0]) logger.transports.forEach(transport => transport.level = this.confService.config.logging[1].level);
 
         if (!AppUtil.canContinue(this.confService.config.baseDirectory)) {
             logger.error('Configuration folder is not valid');
@@ -70,7 +72,7 @@ export class NodeConfigServer {
 
         this.addMiddlewares();
         await this.registerRoutes();
-        this.app.use('/*', ErrorHandler);
+        this.app.use('*', ErrorHandler);
 
         this.server = http.createServer(this.app);
 
@@ -112,10 +114,7 @@ export class NodeConfigServer {
     private async registerRoutes(): Promise<void> {
         this.app.use(APIRouter);
         this.app.use(ClientRouter);
-        this.app.use('/*', (req, res, next) => {
-            res.status(404);
-            next(new Error(`Requested resource ${req.originalUrl} not found`));
-        });
+        this.app.use('*', (req, res, next) => ErrorUtil.handle('NOT_FOUND', res, next, `Requested resource ${req.originalUrl} not found`));
     }
 
     /**

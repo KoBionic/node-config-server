@@ -7,18 +7,23 @@ import { ConfigurationService } from '../../services';
 const glob = promisify(globStream);
 
 
-const confService = ConfigurationService.Instance;
-
 /** The endpoints version tag. */
-export const ENDPOINTS_VERSION: string = 'v1';
+const ENDPOINTS_VERSION: string = 'v1';
+
+/** The API endpoint URL. */
+const API_URL: string = `/api/${ENDPOINTS_VERSION}`;
+
+/** The Client endpoint URL. */
+const CLIENT_URL: string = `/client/${ENDPOINTS_VERSION}`;
+
+const confService = ConfigurationService.Instance;
 
 /**
  * Logs useful information on the application such as configuration directory and some basic metrics.
  *
- * @export
  * @returns {Promise<void>}
  */
-export async function printAppInformation(): Promise<void> {
+async function printAppInformation(): Promise<void> {
     const baseDirectory = resolve(confService.config.baseDirectory);
 
     const files = await glob(`${baseDirectory}/**/*`);
@@ -40,18 +45,24 @@ export async function printAppInformation(): Promise<void> {
 /**
  * Determines whether or not the application is correctly configured and can start.
  *
- * @export
  * @param {string} baseDirectory the configuration files base directory
  * @returns {boolean} true if directory configuration is correct, false otherwise
  */
-export function canContinue(baseDirectory: string): boolean {
+function canContinue(baseDirectory: string): boolean {
     let go = true;
-
     try {
         const stats = statSync(baseDirectory);
-        stats.isDirectory() ? go = true : go = false;
+        go = stats.isDirectory();
     } catch (err) {
         go = false;
     }
     return go;
 }
+
+export {
+    ENDPOINTS_VERSION,
+    API_URL,
+    CLIENT_URL,
+    printAppInformation,
+    canContinue,
+};

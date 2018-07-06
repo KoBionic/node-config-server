@@ -1,22 +1,23 @@
 import * as express from 'express';
 import * as request from 'supertest';
-
-import { router as ClientRouter } from '.';
+import { router, TREE_ROUTER_URL } from '.';
 
 
 describe('Tree Router Test Suite', () => {
 
-    const app = express().use(ClientRouter);
+    const app = express().use(router);
 
     it('should return a proper body', async () => {
         await request(app)
-            .get('/tree')
+            .get(TREE_ROUTER_URL)
             .expect(200)
             .then(res => {
-                expect(res.body.data).toHaveProperty('content');
-                expect(res.body.data.content).toBeInstanceOf(Array);
-                expect(res.body.data).toHaveProperty('root');
-                expect(typeof res.body.data.root).toBe('string');
+                expect(res.body).toHaveProperty('path');
+                expect(res.body).toHaveProperty('name');
+                expect(res.body.type).toBe('directory');
+                expect(res.body).toHaveProperty('size');
+                expect(res.body).toHaveProperty('children');
+                expect(res.body.children).toBeInstanceOf(Array);
             });
     });
 

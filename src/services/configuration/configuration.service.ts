@@ -109,10 +109,20 @@ export class ConfigurationService {
      * @memberof ConfigurationService
      */
     private getEnvironment(): object {
+        const authorizedLogLevels = [
+            'debug',
+            'error',
+            'info',
+            'none',
+            'silly',
+            'verbose',
+            'warn',
+        ];
+
         const envConfig = {
             baseDirectory: process.env.NODE_CONFIG_DIR,
             eureka: [
-                process.env.EUREKA_CLIENT,
+                process.env.EUREKA_CLIENT === 'true' ? true : false,
                 {
                     registry: {
                         host: process.env.EUREKA_SERVER_HOST,
@@ -121,12 +131,12 @@ export class ConfigurationService {
                 },
             ],
             logging: [
-                process.env.LOG_LEVEL,
+                process.env.LOG_LEVEL === 'none' ? false : true,
                 {
-                    correlationId: process.env.LOG_PRINT_ID,
+                    correlationId: process.env.LOG_PRINT_ID === 'true' ? true : false,
                     directory: process.env.LOG_DIR,
-                    enableWebsocket: process.env.LOG_WEBSOCKET,
-                    level: process.env.LOG_LEVEL,
+                    enableWebsocket: process.env.LOG_WEBSOCKET === 'true' ? true : false,
+                    level: authorizedLogLevels.includes(process.env.LOG_LEVEL) ? process.env.LOG_LEVEL : 'info',
                     name: process.env.LOG_NAME,
                 },
             ],
@@ -134,9 +144,9 @@ export class ConfigurationService {
                 port: process.env.PORT,
             },
             security: {
-                enableCors: process.env.CORS,
+                enableCors: process.env.CORS === 'true' ? true : false,
                 httpHeaders: [
-                    process.env.SECURITY,
+                    process.env.SECURITY === 'false' ? false : true,
                 ],
             },
         };

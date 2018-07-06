@@ -3,8 +3,8 @@ import * as fs from 'fs';
 import { hostname } from 'os';
 import { basename, extname, join, resolve, sep } from 'path';
 import { promisify } from 'util';
-import { API_URL } from '../../routers';
 import { ConfigurationService } from '../../services';
+import { AppUtil } from '../../utils';
 import { Tree } from './tree.type';
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
@@ -80,7 +80,7 @@ export class ContentService {
                     size: stats.size,
                     extension: ext.substring(1, ext.length),
                     url: `${this.confService.config.server.scheme}://${hostname().toLowerCase()
-                        }:${this.confService.config.server.port}${API_URL}/${fileUrl}`,
+                        }:${this.confService.config.server.port}${AppUtil.API_URL}/${fileUrl}`,
                 };
             } else if (stats.isDirectory()) {
                 const nodes = await readdir(path);

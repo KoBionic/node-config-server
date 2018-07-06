@@ -1,9 +1,9 @@
 import { Application } from 'express';
 import * as request from 'supertest';
 import { NodeConfigServer } from './node-config-server';
-import { API_URL } from './routers/api';
+import { AppUtil } from './utils';
 
-const URL = `${API_URL}/test/v1/`;
+const URL = `${AppUtil.API_URL}/test/v1/`;
 
 
 describe('Node Config Server Test Suite', () => {
@@ -35,7 +35,7 @@ describe('Node Config Server Test Suite', () => {
 
     it('should return a 400 HTTP code when the file is not entered', done => {
         request(app)
-            .get(`${URL}`)
+            .get(URL)
             .expect(400, done);
     });
 

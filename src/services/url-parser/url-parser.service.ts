@@ -78,6 +78,9 @@ export class URLParserService {
      * @memberof URLParserService
      */
     private async createConfigRequest(url: string): Promise<ConfigRequest> {
+        // Do not continue if URL is undefined
+        if (!url) return undefined;
+
         let configFields;
         let filename;
         let folderPath;
@@ -123,7 +126,7 @@ export class URLParserService {
             configFields: configFields,
             filename: filename,
             folderPath: folderPath,
-            fullPath: join(folderPath, filename),
+            fullPath: filename ? join(folderPath, filename) : folderPath,
         };
     }
 

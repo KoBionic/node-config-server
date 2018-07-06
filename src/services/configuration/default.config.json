@@ -17,15 +17,15 @@
   "logging": [
     true,
     {
-      "correlationId": true,
+      "correlationId": false,
       "directory": "./logs",
-      "enableWebsocket": true,
+      "enableWebsocket": false,
       "level": "info",
       "name": "node-config-server"
     }
   ],
   "security": {
-    "enableCors": true,
+    "enableCors": false,
     "httpHeaders": [
       true,
       {

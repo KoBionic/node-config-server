@@ -1,7 +1,7 @@
 import * as AppUtil from './app';
-import * as PluginUtil from './plugin';
+import * as ErrorUtil from './error';
 
 export {
     AppUtil,
-    PluginUtil,
+    ErrorUtil,
 };

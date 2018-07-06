@@ -1,10 +1,11 @@
-import { logger } from '@kobionic/server-lib';
 import { NextFunction, Request, Response, Router } from 'express';
 import { ContentService } from '../../../services';
+import { ErrorUtil } from '../../../utils';
 
 
+const TREE_ROUTER_URL = '/tree';
 const router: Router = Router();
-const contentService: ContentService = ContentService.Instance;
+const contentService = ContentService.Instance;
 
 /**
  * Returns a Tree view of the configuration files & folders loaded.
@@ -19,18 +20,15 @@ async function getTree(req: Request, res: Response, next: NextFunction): Promise
         res
             .status(200)
             .json(contentTree);
-
     } catch (err) {
-        logger.error('An error occured:', err.message);
-        res.status(500);
-        next(err);
+        ErrorUtil.handle(err, res, next);
     }
 }
 
 router
-    .get('/tree', getTree);
+    .get(TREE_ROUTER_URL, getTree);
 
 export {
+    TREE_ROUTER_URL,
     router,
 };
-

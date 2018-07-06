@@ -1,7 +1,6 @@
-import { logger } from '@kobionic/server-lib';
 import { NextFunction, Request, Response, Router } from 'express';
-import { API_URL } from '..';
 import { FileReaderService, URLParserService } from '../../../services';
+import { AppUtil, ErrorUtil } from '../../../utils';
 
 
 const router = Router();
@@ -16,17 +15,14 @@ const urlParserService = URLParserService.Instance;
  * @param {NextFunction} next the Express next function
  */
 function readFileFromURL(req: Request, res: Response, next: NextFunction): void {
-    const baseUrl = urlParserService.stripEndpointUrl(API_URL, req.baseUrl);
+    const baseUrl = urlParserService.stripEndpointUrl(AppUtil.API_URL, req.baseUrl);
 
     if (baseUrl.length > 1) {
         urlParserService
             .parse(baseUrl)
             .then(configRequest => {
                 if (!configRequest.filename) {
-                    const msg = 'No filename provided';
-                    logger.debug(msg);
-                    res.status(400);
-                    next(new Error(msg));
+                    ErrorUtil.handle('NO_FILENAME_PROVIDED', res, next);
                 } else {
                     const format = req.query.format
                         ? req.query.format.toLowerCase()
@@ -46,24 +42,16 @@ function readFileFromURL(req: Request, res: Response, next: NextFunction): void 
                                     .status(200)
                                     .send(normalize(returnedValue));
                             } else {
-                                const msg = 'Requested property not found in file';
-                                logger.debug(msg);
-                                res.status(404);
-                                next(new Error(msg));
+                                ErrorUtil.handle('PROPERTY_NOT_FOUND', res, next);
                             }
                         });
                 }
             })
             .catch(err => {
-                logger.debug(err);
-                res.status(err.code === 'ENOENT' ? 404 : err.code === 'FORBIDDEN' ? 403 : 500);
-                next(err);
+                ErrorUtil.handle(err, res, next);
             });
     } else {
-        const msg = 'Nothing to process';
-        logger.debug(msg);
-        res.status(400);
-        next(new Error(msg));
+        ErrorUtil.handle('NOTHING_TO_PROCESS', res, next);
     }
 }
 
@@ -99,4 +87,3 @@ router
 export {
     router,
 };
-
