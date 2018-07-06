@@ -2,16 +2,17 @@
 const fs = require('fs');
 const path = require('path');
 const promisify = require('util').promisify;
+const chmod = promisify(fs.chmod);
 const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const stat = promisify(fs.stat);
 
-const paths = {
+const Vars = {
     dist: path.resolve('dist'),
     index: path.resolve('dist', 'bin', 'www'),
     license: path.resolve('COPYRIGHT'),
+    shebang: '#!/usr/bin/env node\n',
 };
-const shebang = '#!/usr/bin/env node\n';
 
 
 /**
@@ -43,25 +44,33 @@ async function ls(dir, files) {
 /**
  * Prepends header to any listed file.
  */
-async function prependHeader() {
-    try {
-        const license = (await readFile(paths.license, 'utf8')).trim();
-        const files = await ls(paths.dist);
-        files.push(paths.index);
+function prependHeader() {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const license = (await readFile(Vars.license, 'utf8')).trim();
+            const files = await ls(Vars.dist);
+            files.unshift(Vars.index);
 
-        // Prepend header to each listed file
-        for (const file of files) {
-            const source = await readFile(file, 'utf8');
-            const target = fs.createWriteStream(file, { start: 0 });
-            // Prepend shebang to index file only
-            if (file === paths.index) target.write(shebang);
-            target.write(`/*\n${license}\n*/\n`);
-            target.write(source);
-            target.end();
+            // Prepend header to each listed file
+            for (const file of files) {
+                const source = await readFile(file, 'utf8');
+                const target = fs.createWriteStream(file, { start: 0 });
+                if (file === Vars.index) target.write(Vars.shebang);
+                target.write(`/*\n${license}\n*/\n`);
+                target.end(source);
+            }
+            resolve();
+        } catch (err) {
+            reject(err);
         }
-    } catch (err) {
-        console.error(err);
-    }
+    });
+}
+
+/**
+ * Does chmod 775 on binary file.
+ */
+function chmodBinary() {
+    return chmod(Vars.index, 0o775);
 }
 
 /**
@@ -70,6 +79,7 @@ async function prependHeader() {
 (async () => {
     try {
         await prependHeader();
+        await chmodBinary();
     } catch (err) {
         console.error(err);
     }

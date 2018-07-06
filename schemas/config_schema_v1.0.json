@@ -114,7 +114,7 @@
       "properties": {
         "enableCors": {
           "default": true,
-          "description": "Enforce Cross-Origin Resource Sharing policy.",
+          "description": "Add Cross-Origin Resource Sharing header.",
           "type": "boolean"
         },
         "httpHeaders": {
