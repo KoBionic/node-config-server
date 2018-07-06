@@ -1,25 +1,13 @@
 version: '3'
 
 services:
-  node-config-server:
+  ncs:
     build: .
     image: 'kobionic/node-config-server'
+    container_name: 'ncs'
     restart: 'always'
     ports:
       - '20490:20490'
     volumes:
-      - './config:/app/config:ro'
-      - './ncs.config.json:/app/ncs.config.json:ro'
-    environment:
-      CORS: 'true'
-      EUREKA_CLIENT: 'false'
-      EUREKA_SERVER_HOST: 'localhost'
-      EUREKA_SERVER_PORT: 8761
-      LOG_DIR: './logs'
-      LOG_LEVEL: 'info'
-      LOG_NAME: 'node-config-server'
-      LOG_PRINT_ID: 'false'
-      LOG_WEBSOCKET: 'true'
-      NODE_CONFIG_DIR: './config'
-      PORT: 20490
-      SECURITY: 'true'
+      - './config:/home/node/config:rw'
+      - './ncs.config.json:/home/node/ncs.config.json:ro'

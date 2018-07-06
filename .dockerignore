@@ -1,0 +1,40 @@
+# IDE folders/files
+.idea/
+.vscode/
+*.iml
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.tgz
+*.zip
+
+# Project folders/files
+build/
+coverage/
+dist/
+logs/
+node_modules/
+*-lock.json
+*.log
+ncs.config.json
