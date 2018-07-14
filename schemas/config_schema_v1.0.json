@@ -88,6 +88,9 @@
                 "debug",
                 "error",
                 "info",
+                "none",
+                "silly",
+                "verbose",
                 "warn"
               ],
               "type": "string"
@@ -199,6 +202,10 @@
         "scheme": {
           "default": "http",
           "description": "Node Config Server HTTP protocol.",
+          "enum": [
+            "http",
+            "https"
+          ],
           "type": "string"
         }
       },

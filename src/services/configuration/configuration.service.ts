@@ -81,17 +81,17 @@ export class ConfigurationService {
             } else {
                 logger.warn('Configuration file is not valid, falling back to default configuration');
             }
-            logger.debug(`FileConfig ${JSON.stringify(config, undefined, 2)}`);
+            logger.debug(`FileConfig ${JSON.stringify(config)}`);
         } catch (err) {
             shouldCreate = true;
         }
 
         if (this.doLoadEnvironment) {
             const envConfig = this.getEnvironment();
-            logger.debug(`EnvConfig ${JSON.stringify(envConfig, undefined, 2)}`);
+            logger.debug(`EnvConfig ${JSON.stringify(envConfig)}`);
             const merged = merge(merge(this.defaultConfig, config), envConfig);
             config = merged;
-            logger.debug(`MergedConfig ${JSON.stringify(merged, undefined, 2)}`);
+            logger.debug(`MergedConfig ${JSON.stringify(merged)}`);
             this.doLoadEnvironment = false;
         }
 
@@ -136,7 +136,7 @@ export class ConfigurationService {
                     correlationId: process.env.LOG_PRINT_ID === 'true' ? true : false,
                     directory: process.env.LOG_DIR,
                     enableWebsocket: process.env.LOG_WEBSOCKET === 'true' ? true : false,
-                    level: authorizedLogLevels.includes(process.env.LOG_LEVEL) ? process.env.LOG_LEVEL : 'info',
+                    level: process.env.LOG_LEVEL ? authorizedLogLevels.includes(process.env.LOG_LEVEL) ? process.env.LOG_LEVEL : 'info' : undefined,
                     name: process.env.LOG_NAME,
                 },
             ],
