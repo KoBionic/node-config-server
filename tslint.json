@@ -79,7 +79,7 @@
     "deprecation": true,
     "encoding": true,
     "eofline": true,
-    "forin": false,
+    "forin": true,
     "import-spacing": true,
     "indent": [
       true,
@@ -158,7 +158,7 @@
     "no-implicit-dependencies": false,
     "no-import-side-effect": false,
     "no-inferrable-types": false,
-    "no-inferred-empty-object-type": true,
+    "no-inferred-empty-object-type": false,
     "no-internal-module": true,
     "no-invalid-template-strings": true,
     "no-irregular-whitespace": true,
@@ -184,7 +184,7 @@
     "no-this-assignment": true,
     "no-trailing-whitespace": true,
     "no-unbound-method": true,
-    "no-unnecessary-callback-wrapper": false,
+    "no-unnecessary-callback-wrapper": true,
     "no-unnecessary-class": [
       true,
       "allow-empty-class"
@@ -274,7 +274,8 @@
       true,
       "call-signature",
       "parameter",
-      "property-declaration"
+      "property-declaration",
+      "member-variable-declaration"
     ],
     "typedef-whitespace": [
       true,
