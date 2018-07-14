@@ -1,4 +1,4 @@
-import { ErrorHandler, EurekaClientRouter, EurekaClientService, httpLogger, logger, WSTransport } from '@kobionic/server-lib';
+import { ErrorMiddleware, EurekaClientRouter, EurekaClientService, logger, WSTransport } from '@kobionic/server-lib';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
@@ -32,7 +32,7 @@ export class NodeConfigServer {
      *
      * @memberof NodeConfigServer
      */
-    constructor() {
+    constructor(argv: any) {
         this.startTime = Date.now();
         this.confService = ConfigurationService.Instance;
     }
@@ -59,8 +59,7 @@ export class NodeConfigServer {
      */
     public async init(): Promise<NodeConfigServer> {
         this.app = express();
-        // FIXME: there should be a method setLevel in @kobionic/server-lib/logger instead of doing it like this here
-        if (this.confService.config.logging[0]) logger.transports.forEach(transport => transport.level = this.confService.config.logging[1].level);
+        if (this.confService.config.logging[0]) logger.setLoggersLevel(this.confService.config.logging[1].level);
 
         if (!AppUtil.canContinue(this.confService.config.baseDirectory)) {
             logger.error('Configuration folder is not valid');
@@ -71,13 +70,6 @@ export class NodeConfigServer {
             .catch(err => logger.error(`An error occured: ${err.message}`));
 
         this.addMiddlewares();
-        await this.registerRoutes();
-        this.app.use('*', ErrorHandler);
-
-        this.server = http.createServer(this.app);
-
-        // Add a WebSocket transport unless specified otherwise
-        if (this.confService.config.logging[1].enableWebsocket) logger.add(new WSTransport(this.server, 'serverLog'));
 
         // Start Eureka client only if configuration is set to true
         if (this.confService.config.eureka[0]) {
@@ -86,6 +78,15 @@ export class NodeConfigServer {
             eureka.init(hostname().toLowerCase(), this.confService.config.server.port);
             eureka.start();
         }
+
+        await this.registerRoutes();
+        this.app.use('*', ErrorMiddleware);
+
+        this.server = http.createServer(this.app);
+
+        // Add a WebSocket transport unless specified otherwise
+        if (this.confService.config.logging[1].enableWebsocket) logger.add(new WSTransport(this.server, 'serverLog'));
+
         return this;
     }
 
@@ -98,7 +99,7 @@ export class NodeConfigServer {
     private addMiddlewares(): void {
         if (this.confService.config.security.enableCors) this.app.use(cors());
         if (this.confService.config.security.httpHeaders['0']) this.app.use(helmet(this.confService.config.security.httpHeaders['1']));
-        this.app.use(httpLogger());
+        this.app.use(logger.getHttpLogger());
         this.app.use(bodyParser.json({ limit: '10mb' }));
         this.app.use(bodyParser.text({ limit: '10mb' }));
         this.app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));

@@ -1,12 +1,13 @@
 import { logger } from '@kobionic/server-lib';
 import * as fs from 'fs';
-import { hostname } from 'os';
+import { EOL } from 'os';
 import { basename, extname, join, resolve, sep } from 'path';
 import { promisify } from 'util';
-import { ConfigurationService } from '../../services';
-import { AppUtil } from '../../utils';
+import { ConfigurationService } from '..';
+import { Log } from './log.type';
 import { Tree } from './tree.type';
 const readdir = promisify(fs.readdir);
+const readFile = promisify(fs.readFile);
 const stat = promisify(fs.stat);
 
 
@@ -45,6 +46,21 @@ export class ContentService {
     }
 
     /**
+     * Returns all JSON logs read from current JSON logging file.
+     *
+     * @returns {Promise<Log[]>} the JSON logs array
+     * @memberof ContentService
+     */
+    public async getLogs(): Promise<Log[]> {
+        const content = await readFile(logger.FILENAME_JSON, 'utf8');
+        const logsArray = content
+            .split(EOL)
+            .filter(log => log ? log : undefined)
+            .map(log => JSON.parse(log));
+        return logsArray;
+    }
+
+    /**
      * Returns a directory Tree object from configuration folder.
      *
      * @returns {Promise<Tree>} the Tree object generated from configuration folder
@@ -79,8 +95,7 @@ export class ContentService {
                     type: 'file',
                     size: stats.size,
                     extension: ext.substring(1, ext.length),
-                    url: `${this.confService.config.server.scheme}://${hostname().toLowerCase()
-                        }:${this.confService.config.server.port}${AppUtil.API_URL}/${fileUrl}`,
+                    url: fileUrl,
                 };
             } else if (stats.isDirectory()) {
                 const nodes = await readdir(path);

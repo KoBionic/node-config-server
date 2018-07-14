@@ -2,7 +2,7 @@ import { logger } from '@kobionic/server-lib';
 import { readFile } from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
-import { GenericParser, INIParser, JSONParser, PlainTextParser, PropertiesParser, XMLParser, YAMLParser } from '../../parsers';
+import { GenericParser, INIParser, JSONParser, PropertiesParser, TextPlainParser, XMLParser, YAMLParser } from '../../parsers';
 import { FileType } from './file-type.type';
 const readFileAsync = promisify(readFile);
 
@@ -60,9 +60,9 @@ export class FileReaderService {
             const data = await readFileAsync(pathToFile, 'utf8');
 
             // Force use of PlainTextParser if format string is provided
-            if (format === 'plain-text') {
+            if (format === 'text-plain') {
                 logger.debug(`Format: ${format}`);
-                fileType = 'plain-text';
+                fileType = 'text-plain';
             }
 
             let parser: GenericParser;
@@ -87,7 +87,7 @@ export class FileReaderService {
                     break;
                 default:
                     logger.debug(`Unknown or forced file type: ${fileType}`);
-                    parser = new PlainTextParser();
+                    parser = new TextPlainParser();
             }
             // Parse data using the correct parser
             obj = await parser.parse(data);

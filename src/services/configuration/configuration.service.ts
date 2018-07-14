@@ -4,7 +4,7 @@ import { path as rootPath, resolve as rootResolve } from 'app-root-path';
 import { readFileSync, statSync, writeFileSync } from 'fs';
 import { merge } from 'lodash';
 import { join } from 'path';
-import AppConfig from '../../services/configuration/configuration.type';
+import AppConfig from './configuration.type';
 
 
 /**

@@ -2,7 +2,7 @@ import { logger } from '@kobionic/server-lib';
 import { stat } from 'fs';
 import { join, resolve } from 'path';
 import { promisify } from 'util';
-import { ConfigurationService } from '../../services';
+import { ConfigurationService } from '..';
 import { ConfigRequest } from './config-request.type';
 const statAsync = promisify(stat);
 

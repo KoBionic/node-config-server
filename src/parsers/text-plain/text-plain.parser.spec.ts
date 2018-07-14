@@ -1,10 +1,10 @@
 import { readFileSync } from 'fs';
-import { PlainTextParser } from '.';
+import { TextPlainParser } from '.';
 
 
 describe('Plain Text Parser Test Suite', () => {
 
-    const plainTextParser = new PlainTextParser();
+    const textPlainParser = new TextPlainParser();
     const stringContent = readFileSync(`${__dirname}/test.md`, 'utf8');
     const expectedString = `# Library
 
@@ -50,7 +50,7 @@ Watched: true
 `;
 
     it('should return the same string as sent', async () => {
-        const obj = await plainTextParser.parse(stringContent);
+        const obj = await textPlainParser.parse(stringContent);
         expect(obj).toEqual(expectedString);
     });
 
