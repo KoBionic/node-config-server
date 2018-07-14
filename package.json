@@ -64,7 +64,7 @@
     }
   },
   "dependencies": {
-    "@kobionic/server-lib": "1.1.0",
+    "@kobionic/server-lib": "1.1.1",
     "ajv": "6.5.2",
     "app-root-path": "2.1.0",
     "body-parser": "1.18.3",
