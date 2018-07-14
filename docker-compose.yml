@@ -11,3 +11,6 @@ services:
     volumes:
       - './config:/home/node/config:rw'
       - './ncs.config.json:/home/node/ncs.config.json:ro'
+    environment:
+      CORS: 'true'
+      LOG_WEBSOCKET: 'true'
