@@ -5,6 +5,10 @@ node_js:
   - 'node'
   - '8'
 
+addons:
+  sonarcloud:
+    organization: 'kobionic'
+
 services:
   - 'docker'
 
@@ -19,6 +23,7 @@ install:
 script:
   - 'npm run test'
   - 'docker-compose build'
+  - 'sh sonar.sh'
 
 deploy:
   provider: 'npm'

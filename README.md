@@ -2,6 +2,10 @@
 
 [![npm version](https://img.shields.io/npm/v/@kobionic/node-config-server.svg?style=flat)](https://www.npmjs.com/package/@kobionic/node-config-server)
 [![Build Status](https://img.shields.io/travis/KoBionic/node-config-server.svg)](https://travis-ci.org/KoBionic/node-config-server/branches)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=node-config-server&metric=coverage)](https://sonarcloud.io/dashboard?id=node-config-server)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=node-config-server&metric=alert_status)](https://sonarcloud.io/dashboard?id=node-config-server)
+[![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=node-config-server&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=node-config-server)
+[![Security](https://sonarcloud.io/api/project_badges/measure?project=node-config-server&metric=security_rating)](https://sonarcloud.io/dashboard?id=node-config-server)
 [![Dependencies Status](https://img.shields.io/david/kobionic/node-config-server.svg)](https://david-dm.org/kobionic/node-config-server)
 [![DevDependencies Status](https://img.shields.io/david/dev/kobionic/node-config-server.svg)](https://david-dm.org/kobionic/node-config-server?type=dev)
 [![License](https://img.shields.io/npm/l/@kobionic/node-config-server.svg)](https://github.com/kobionic/node-config-server/blob/master/LICENSE)
