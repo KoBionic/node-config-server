@@ -9,6 +9,7 @@ import { Tree } from './tree.type';
 const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const stat = promisify(fs.stat);
+const writeFile = promisify(fs.writeFile);
 
 
 /**
@@ -58,6 +59,23 @@ export class ContentService {
             .filter(log => log ? log : undefined)
             .map(log => JSON.parse(log));
         return logsArray;
+    }
+
+    /**
+     * Deletes all JSON logs from current JSON logging file.
+     *
+     * @returns {Promise<boolean>} true if successfully deleted, false otherwise
+     * @memberof ContentService
+     */
+    public async deleteLogs(): Promise<boolean> {
+        let isDeleted = true;
+        try {
+            await writeFile(logger.FILENAME_JSON, '', 'utf8');
+            await writeFile(logger.FILENAME_LOG, '', 'utf8');
+        } catch (err) {
+            isDeleted = false;
+        }
+        return isDeleted;
     }
 
     /**

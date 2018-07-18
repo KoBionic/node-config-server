@@ -25,8 +25,27 @@ async function getLogs(req: Request, res: Response, next: NextFunction): Promise
     }
 }
 
+/**
+ * Deletes logs from current JSON logging file.
+ *
+ * @param {Request} req the Express request
+ * @param {Response} res the Express response
+ * @param {NextFunction} next the Express next function
+ */
+async function deleteLogs(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const isDeleted = await contentService.deleteLogs();
+        isDeleted
+            ? res.status(204).end()
+            : res.status(403).end();
+    } catch (err) {
+        ErrorUtil.handle(err, res, next);
+    }
+}
+
 router
-    .get(LOG_ROUTER_URL, getLogs);
+    .get(LOG_ROUTER_URL, getLogs)
+    .delete(LOG_ROUTER_URL, deleteLogs);
 
 export {
     LOG_ROUTER_URL,
