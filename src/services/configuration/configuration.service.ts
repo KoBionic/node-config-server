@@ -3,7 +3,7 @@ import * as ajv from 'ajv';
 import { path as rootPath, resolve as rootResolve } from 'app-root-path';
 import { readFileSync, statSync, writeFileSync } from 'fs';
 import { merge } from 'lodash';
-import { join } from 'path';
+import { isAbsolute, join } from 'path';
 import AppConfig from './configuration.type';
 
 
@@ -69,7 +69,9 @@ export class ConfigurationService {
      */
     private loadConfigSync(): void {
         let shouldCreate = false;
-        let config = this.defaultConfig;
+        // Copy object because Lodash's merge method mutates object
+        const defaultConfig = { ...this.defaultConfig };
+        let config = defaultConfig;
 
         try {
             const stats = statSync(this.configFilePath);
@@ -89,13 +91,13 @@ export class ConfigurationService {
         if (this.doLoadEnvironment) {
             const envConfig = this.getEnvironment();
             logger.debug(`EnvConfig ${JSON.stringify(envConfig)}`);
-            const merged = merge(merge(this.defaultConfig, config), envConfig);
+            const merged = merge(merge(defaultConfig, config), envConfig);
             config = merged;
             logger.debug(`MergedConfig ${JSON.stringify(merged)}`);
             this.doLoadEnvironment = false;
         }
 
-        config.baseDirectory = rootResolve(config.baseDirectory);
+        if (!isAbsolute(config.baseDirectory)) config.baseDirectory = rootResolve(config.baseDirectory);
         this._config = config;
         logger.info(`Configuration ${JSON.stringify(config, undefined, 2)}`);
         if (shouldCreate) this.saveConfig(config);
