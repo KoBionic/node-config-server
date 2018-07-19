@@ -36,7 +36,7 @@
   "scripts": {
     "assets": "copyup src/bin/www src/**/*.json --exclude src/**/test.json dist",
     "build": "npm-run-all clean --parallel assets compile",
-    "postbuild": "node build.js",
+    "postbuild": "node postbuild.js",
     "build:w": "npm-run-all clean assets 'compile -- --watch'",
     "clean": "rimraf coverage dist logs",
     "compile": "tsc",
